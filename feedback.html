@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback Collection | Marcela</title>
+<style>
+:root{--ink:#f4eafb;--muted:#c5b5d5;--line:#8b70a5;--pink:#f0b4d8;--yellow:#f8d58c;--teal:#8de0d0;--panel:#342a5c}*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.5 Arial,sans-serif;background:radial-gradient(circle at 80% 5%,#59346f,transparent 35%),linear-gradient(145deg,#121b3b,#292052)}.shell{width:min(1000px,calc(100% - 36px));margin:auto}.top{padding:28px 0}.back{display:inline-block;padding:10px 14px;border:1px solid var(--line);border-radius:8px;color:var(--teal);text-decoration:none}.hero{padding:38px 0 30px}.kicker{color:var(--teal);font-size:.75rem;font-weight:bold;letter-spacing:.14em;text-transform:uppercase}h1{margin:10px 0;font:700 clamp(2.8rem,7vw,5.6rem)/.95 Georgia,serif}.hero p{max-width:630px;color:var(--muted)}.layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px;margin-bottom:70px}.panel{padding:25px;border:1px solid var(--line);border-radius:16px;background:#342a5ccc;box-shadow:0 18px 35px #03071c55}.panel h2{margin:0 0 18px;font:700 1.55rem Georgia,serif}.label{display:block;margin:14px 0 6px;color:var(--muted);font-size:.8rem}.name,.message{width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;color:var(--ink);background:#10172fcc;font:14px Arial,sans-serif}.message{min-height:120px;resize:vertical}.rating{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:4px}.rating input{position:absolute;opacity:0}.rating label{color:#765b89;font-size:1.8rem;cursor:pointer}.rating label:hover,.rating label:hover~label,.rating input:checked~label{color:var(--yellow)}button{cursor:pointer}.submit,.owner-button{padding:11px 15px;border:1px solid var(--pink);border-radius:8px;color:#2b1c41;background:var(--pink);font-weight:bold}.submit{margin-top:18px}.owner-button{margin-bottom:18px;color:var(--ink);border-color:var(--line);background:#ffffff12}.owner-mode .owner-button{color:#102b25;border-color:var(--teal);background:var(--teal)}.feedback-list{display:grid;gap:12px}.feedback-item{position:relative;padding:15px;border-left:3px solid var(--teal);background:#121b3b99}.stars{color:var(--yellow);letter-spacing:2px}.feedback-item p{margin:7px 0 0}.delete-button{display:none;position:absolute;top:10px;right:10px;padding:5px 8px;border:1px solid #ef858f;border-radius:5px;color:#ef858f;background:transparent}.owner-mode .delete-button{display:block}.empty{color:var(--muted)}@media(max-width:700px){.layout{grid-template-columns:1fr}.shell{width:calc(100% - 28px)}}
+</style>
+</head>
+<body><main class="shell"><header class="top"><a class="back" href="index.html">&#8592; Back to portfolio</a></header><section class="hero"><div class="kicker">Feedback collection</div><h1>Your thoughts help me grow.</h1><p>Leave a rating and message. Your name is optional and is never displayed. Every saved feedback appears in the portfolio's floating cycle.</p></section><section class="layout"><form class="panel" id="feedback-form"><h2>Leave feedback</h2><label class="label" for="name">Your name (optional)</label><input class="name" id="name" type="text" placeholder="Leave blank if you prefer"><label class="label" for="message">Your feedback</label><textarea class="message" id="message" placeholder="What do you think about my portfolio?" required></textarea><label class="label">Your rating</label><div class="rating"><input id="star5" name="rating" type="radio" value="5" required><label for="star5">&#9733;</label><input id="star4" name="rating" type="radio" value="4"><label for="star4">&#9733;</label><input id="star3" name="rating" type="radio" value="3"><label for="star3">&#9733;</label><input id="star2" name="rating" type="radio" value="2"><label for="star2">&#9733;</label><input id="star1" name="rating" type="radio" value="1"><label for="star1">&#9733;</label></div><button class="submit" type="submit">Submit feedback</button></form><section class="panel"><h2>All feedbacks</h2><p class="label">The owner can unlock delete controls.</p><button class="owner-button" id="owner-button" type="button">Owner access</button><div class="feedback-list" id="feedback-list"></div></section></section></main><script>const key='marcela-feedback',ownerPassword='marcela-owner',defaults=[{message:'A thoughtful portfolio with useful, creative projects.',rating:5},{message:'The project ideas are clear and easy to explore.',rating:5},{message:'The systems show curiosity, effort, and practical learning.',rating:5}],getEntries=()=>{const stored=localStorage.getItem(key);let entries=stored?JSON.parse(stored):[];if(!localStorage.getItem('marcela-feedback-seeded')){entries=defaults.concat(entries.filter(entry=>!defaults.some(item=>item.message===entry.message)));localStorage.setItem(key,JSON.stringify(entries));localStorage.setItem('marcela-feedback-seeded','true')}return entries},list=document.querySelector('#feedback-list'),render=()=>{const entries=getEntries();list.textContent='';if(!entries.length){list.innerHTML='<p class="empty">No feedback yet.</p>';return}entries.slice().reverse().forEach((entry,reverseIndex)=>{const item=document.createElement('article');item.className='feedback-item';const stars=document.createElement('span');stars.className='stars';stars.textContent='★'.repeat(Number(entry.rating)||5);const message=document.createElement('p');message.textContent=`"${entry.message}"`;const remove=document.createElement('button');remove.className='delete-button';remove.textContent='Delete';remove.type='button';remove.addEventListener('click',()=>{const saved=getEntries();saved.splice(entries.length-1-reverseIndex,1);localStorage.setItem(key,JSON.stringify(saved));render()});item.append(stars,message,remove);list.append(item)})};document.querySelector('#feedback-form').addEventListener('submit',event=>{event.preventDefault();const message=document.querySelector('#message').value.trim().replace(/[<>]/g,''),rating=document.querySelector('input[name="rating"]:checked').value,saved=getEntries();saved.push({message,rating});localStorage.setItem(key,JSON.stringify(saved));render();event.target.reset()});document.querySelector('#owner-button').addEventListener('click',event=>{if(document.body.classList.toggle('owner-mode')){const password=prompt('Enter owner password:');if(password!==ownerPassword){document.body.classList.remove('owner-mode');alert('Owner access denied.')}else{event.target.textContent='Owner mode on'}}else event.target.textContent='Owner access'});window.addEventListener('storage',render);render();</script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+const firebaseConfig = { apiKey: 'AIzaSyC01Mvl5l_gnvsOMy9IfUo12s8BOobN0X8', authDomain: 'portfolio-a4773.firebaseapp.com', projectId: 'portfolio-a4773', storageBucket: 'portfolio-a4773.firebasestorage.app', messagingSenderId: '730470031830', appId: '1:730470031830:web:95c02f70fd21f148998477', measurementId: 'G-2W656YG2VD' };
+const db = getFirestore(initializeApp(firebaseConfig));
+const auth = getAuth();
+const feedbackCollection = collection(db, 'feedback');
+localStorage.removeItem('marcela-feedback');
+localStorage.removeItem('marcela-feedback-seeded');
+const feedbackList = document.querySelector('#feedback-list');
+document.querySelector('.hero p').textContent = 'Leave a rating and message. Your name is optional and is shown with your feedback when provided. Every saved feedback appears in the portfolio\'s floating cycle.';
+let feedbackEntries = [];
+const ownerButton = document.querySelector('#owner-button');
+const modal = document.createElement('dialog');
+modal.innerHTML = '<form method="dialog" class="owner-modal"><h2>Owner access</h2><p>Log in to manage visitor feedback.</p><label for="owner-email">Email</label><input id="owner-email" type="email" placeholder="Enter owner email" autocomplete="username" required><label for="owner-password">Password</label><input id="owner-password" type="password" minlength="6" autocomplete="current-password" required><p class="owner-error" role="alert"></p><div><button value="cancel" type="submit">Cancel</button><button id="owner-submit" value="default" type="submit">Unlock</button></div></form>';
+document.body.append(modal);
+const modalForm = modal.querySelector('.owner-modal');
+modal.querySelector('button[value="cancel"]').addEventListener('click', () => { modalForm.reset(); modal.close(); });
+const replyModal = document.createElement('dialog');
+replyModal.innerHTML = '<form method="dialog" class="owner-modal reply-modal"><h2>Reply to feedback</h2><label for="reply-message">Your reply</label><textarea id="reply-message" rows="4" maxlength="1000" required></textarea><p class="owner-error" role="alert"></p><div><button value="cancel" type="submit">Cancel</button><button id="reply-submit" value="default" type="submit">Save reply</button></div></form>';
+document.body.append(replyModal);
+const replyForm = replyModal.querySelector('.reply-modal');
+replyModal.querySelector('button[value="cancel"]').addEventListener('click', () => { replyForm.reset(); replyModal.close(); });
+const deleteModal = document.createElement('dialog');
+deleteModal.innerHTML = '<form method="dialog" class="owner-modal delete-modal"><h2>Delete feedback?</h2><p>This feedback will be permanently removed.</p><div><button value="cancel" type="submit">Cancel</button><button id="delete-submit" value="default" type="submit">Delete</button></div></form>';
+document.body.append(deleteModal);
+const deleteForm = deleteModal.querySelector('.delete-modal');
+deleteForm.querySelector('button[value="cancel"]').addEventListener('click', () => deleteModal.close());
+const submitModal = document.createElement('dialog');
+submitModal.innerHTML = '<form method="dialog" class="owner-modal submit-modal"><h2>Send feedback?</h2><p>Your feedback will be shared on the portfolio.</p><div><button value="cancel" type="submit">Cancel</button><button id="submit-confirm" value="default" type="submit">Send feedback</button></div></form>';
+document.body.append(submitModal);
+const submitForm = submitModal.querySelector('.submit-modal');
+submitForm.querySelector('button[value="cancel"]').addEventListener('click', () => submitModal.close());
+const modalStyle = document.createElement('style');
+modalStyle.textContent = '.owner-modal{min-width:min(360px,calc(100vw - 48px));padding:26px;border:1px solid var(--line);border-radius:16px;color:var(--ink);background:#342a5c;box-shadow:0 20px 55px #03071caa}.owner-modal::backdrop{background:#03071c99;backdrop-filter:blur(4px)}.owner-modal h2{margin:0 0 6px;font:700 1.5rem Georgia,serif}.owner-modal p{color:var(--muted);font-size:.85rem}.owner-modal label{display:block;margin:14px 0 5px;color:var(--muted);font-size:.78rem}.owner-modal input{width:100%;padding:10px;border:1px solid var(--line);border-radius:7px;color:var(--ink);background:#10172f}.owner-modal button{margin:16px 6px 0 0;padding:9px 13px;border:1px solid var(--pink);border-radius:7px;color:#2b1c41;background:var(--pink);font-weight:bold}.owner-modal button:first-child{color:var(--ink);border-color:var(--line);background:#ffffff12}.owner-error{min-height:18px;margin-bottom:0;color:#ffadb2!important}.feedback-reply{margin-top:10px;padding:9px 11px;border-left:2px solid var(--pink);color:var(--pink);font-size:.78rem;line-height:1.45;animation:replyIn .5s ease both}.feedback-reply strong{display:block;margin-bottom:2px;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}@keyframes replyIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.feedback-actions{display:flex;gap:6px;margin-top:10px}.feedback-actions button{position:static!important;display:inline-block!important;padding:5px 8px;font-size:.68rem}';
+document.head.append(modalStyle);
+const authorStyle = document.createElement('style');
+authorStyle.textContent = '.feedback-author{display:block;margin-top:8px;color:var(--teal);font-size:.75rem;font-weight:600;letter-spacing:.02em}';
+document.head.append(authorStyle);
+const feedbackDateStyle = document.createElement('style');
+feedbackDateStyle.textContent = '.feedback-item{padding-bottom:34px}.feedback-date{position:absolute;right:12px;bottom:10px;color:var(--muted);font-size:.65rem;line-height:1}';
+document.head.append(feedbackDateStyle);
+const modalMotionStyle = document.createElement('style');
+modalMotionStyle.textContent = '.owner-modal{position:fixed;top:50%;left:50%;width:min(360px,calc(100vw - 40px));margin:0;animation:ownerModalIn .35s ease-out both}.owner-modal button{font-size:.76rem;transition:transform .2s ease,box-shadow .2s ease}.owner-modal button:hover{transform:translateY(-2px);box-shadow:0 6px 14px #03071c55}.owner-modal button:active{transform:translateY(1px)}.owner-modal textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:7px;color:var(--ink);background:#10172f;resize:vertical}.delete-modal button:last-child{border-color:#ef858f;color:#fff;background:#c94f67}.delete-modal button:last-child:hover{border-color:var(--yellow);color:#2b1c41;background:var(--yellow)}@keyframes ownerModalIn{from{opacity:0;transform:translate(-50%,-44%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}.feedback-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.feedback-actions button{position:static!important;display:inline-flex!important;align-items:center;justify-content:center;padding:7px 11px;border:1px solid var(--teal);border-radius:9px;color:var(--teal);background:transparent;font:700 .7rem "Space Grotesk",sans-serif;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s}.feedback-actions button:hover{transform:translateY(-3px);border-color:var(--yellow);color:#2b1c41;background:var(--yellow);box-shadow:0 8px 16px #f8d58c33}.feedback-actions button:active{transform:translateY(1px)}.feedback-actions button:last-child{border-color:#ef858f;color:#ef858f}.feedback-actions button:last-child:hover{border-color:#ef858f;color:#fff;background:#c94f67}@media(max-width:480px){.owner-modal{width:calc(100vw - 48px);padding:20px;border-radius:13px}.owner-modal h2{font-size:1.25rem}.owner-modal input,.owner-modal textarea{padding:9px;font-size:.82rem}.owner-modal button{margin-top:12px;padding:8px 11px;font-size:.72rem}.feedback-actions{gap:5px}.feedback-actions button{padding:6px 9px;font-size:.65rem}}';
+modalMotionStyle.textContent += '@media(max-width:480px){.submit,.owner-button{padding:9px 12px;font-size:.75rem}.feedback-actions button{min-height:32px}}';
+document.head.append(modalMotionStyle);
+const renderFeedback = () => {
+	feedbackList.textContent = '';
+	feedbackEntries.forEach(entry => {
+		const item = document.createElement('article');
+		item.className = 'feedback-item';
+		const stars = document.createElement('span');
+		stars.className = 'stars';
+		stars.textContent = '\u2605'.repeat(Number(entry.rating) || 5);
+		const message = document.createElement('p');
+		message.textContent = `"${entry.message}"`;
+		item.append(stars, message);
+		if (entry.reply) {
+			const reply = document.createElement('div');
+			reply.className = 'feedback-reply';
+			reply.innerHTML = '<strong>Marcela\'s reply</strong>';
+			const replyText = document.createElement('span');
+			replyText.textContent = entry.reply;
+			reply.append(replyText);
+			item.append(reply);
+		}
+		if (auth.currentUser) {
+			const actions = document.createElement('div');
+			actions.className = 'feedback-actions';
+			const replyButton = document.createElement('button');
+			replyButton.type = 'button';
+			replyButton.textContent = entry.reply ? 'Edit reply' : 'Reply';
+			replyButton.addEventListener('click', () => {
+				replyModal.querySelector('#reply-message').value = entry.reply || '';
+				replyModal.querySelector('.owner-error').textContent = '';
+				replyForm.dataset.feedbackId = entry.id;
+				replyModal.showModal();
+			});
+			const remove = document.createElement('button');
+			remove.type = 'button';
+			remove.textContent = 'Delete';
+			remove.addEventListener('click', () => {
+				deleteForm.dataset.feedbackId = entry.id;
+				deleteModal.showModal();
+			});
+			actions.append(replyButton, remove);
+			item.append(actions);
+		}
+		const createdAt = entry.createdAt?.toDate?.() ?? entry.createdAt;
+		if (createdAt instanceof Date && !Number.isNaN(createdAt.getTime())) {
+			const date = document.createElement('time');
+			date.className = 'feedback-date';
+			date.dateTime = createdAt.toISOString();
+			date.textContent = new Intl.DateTimeFormat('en-PH', {
+				month: 'short', day: 'numeric', year: 'numeric'
+			}).format(createdAt);
+			item.append(date);
+		}
+		feedbackList.append(item);
+	});
+	if (!feedbackEntries.length) feedbackList.innerHTML = '<p class="empty">No feedback yet.</p>';
+};
+onSnapshot(query(feedbackCollection, orderBy('createdAt', 'desc')), snapshot => { feedbackEntries = snapshot.docs.map(item => ({ id: item.id, ...item.data() })); renderFeedback(); }, error => { feedbackList.innerHTML = `<p class="empty">Unable to load feedback: ${error.message}</p>`; });
+const feedbackForm = document.querySelector('#feedback-form');
+feedbackForm.noValidate = true;
+feedbackForm.addEventListener('submit', event => { event.preventDefault(); event.stopImmediatePropagation(); const message = document.querySelector('#message').value.trim().replace(/[<>]/g, ''); const ratingInput = document.querySelector('input[name="rating"]:checked'); if (message.length < 2) { alert('Please enter at least 2 characters for your feedback.'); return; } if (!ratingInput) { alert('Please choose a rating first.'); return; } submitForm.dataset.message = message; submitForm.dataset.rating = ratingInput.value; submitForm.dataset.name = document.querySelector('#name').value.trim().replace(/[<>]/g, ''); submitModal.showModal(); }, true);
+submitForm.addEventListener('submit', async event => { if (event.submitter?.value === 'cancel') { event.preventDefault(); submitModal.close(); return; } event.preventDefault(); const button = feedbackForm.querySelector('button[type="submit"]'); button.disabled = true; button.textContent = 'Saving...'; try { await Promise.race([addDoc(feedbackCollection, { message: submitForm.dataset.message, rating: Number(submitForm.dataset.rating), name: submitForm.dataset.name, createdAt: serverTimestamp() }), new Promise((_, reject) => setTimeout(() => reject(new Error('The request timed out. Check your Firestore Rules and internet connection.')), 10000))]); submitModal.close(); feedbackForm.reset(); } catch (error) { alert(`Unable to save feedback: ${error.message}`); } finally { button.disabled = false; button.textContent = 'Submit feedback'; } });
+ownerButton.addEventListener('click', event => { event.stopImmediatePropagation(); if (auth.currentUser) { signOut(auth); return; } modal.querySelector('.owner-error').textContent = ''; modal.showModal(); }, true);
+modalForm.addEventListener('submit', async event => { if (event.submitter?.value === 'cancel') { event.preventDefault(); modalForm.reset(); modal.close(); return; } event.preventDefault(); try { await signInWithEmailAndPassword(auth, modal.querySelector('#owner-email').value.trim(), modal.querySelector('#owner-password').value); modal.close(); modalForm.reset(); } catch (error) { modal.querySelector('.owner-error').textContent = 'Incorrect owner login.'; } });
+replyForm.addEventListener('submit', async event => { if (event.submitter?.value === 'cancel') { event.preventDefault(); replyForm.reset(); replyModal.close(); return; } event.preventDefault(); const reply = replyForm.querySelector('#reply-message').value.trim().replace(/[<>]/g, ''); if (!reply) return; try { await updateDoc(doc(db, 'feedback', replyForm.dataset.feedbackId), { reply }); replyModal.close(); replyForm.reset(); } catch (error) { replyForm.querySelector('.owner-error').textContent = 'Unable to save reply.'; } });
+deleteForm.addEventListener('submit', async event => { if (event.submitter?.value === 'cancel') { event.preventDefault(); deleteModal.close(); return; } event.preventDefault(); try { await deleteDoc(doc(db, 'feedback', deleteForm.dataset.feedbackId)); deleteModal.close(); } catch (error) { deleteModal.close(); } });
+onAuthStateChanged(auth, user => { document.body.classList.toggle('owner-mode', Boolean(user)); ownerButton.textContent = user ? 'Lock owner access' : 'Owner access'; renderFeedback(); });
+const renderFeedbackAuthors = () => { feedbackList.querySelectorAll('.feedback-item').forEach((item, index) => { const entry = feedbackEntries[index]; const existing = item.querySelector('.feedback-author'); if (!entry?.name) { existing?.remove(); return; } const author = existing || document.createElement('small'); author.className = 'feedback-author'; author.textContent = `By ${entry.name}`; const reply = item.querySelector('.feedback-reply'); item.insertBefore(author, reply || item.querySelector('.feedback-actions') || null); }); };
+new MutationObserver(renderFeedbackAuthors).observe(feedbackList, { childList: true });
+renderFeedbackAuthors();
+</script>
+</html>

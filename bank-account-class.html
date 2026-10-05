@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Account Class | C++ Project</title>
+    <style>
+        :root { --bg: #101d1c; --panel: #172a27; --line: #2b4943; --ink: #e8f3ee; --muted: #91aaa2; --teal: #70d2bd; --orange: #f29a6b; }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--bg); font-family: Arial, sans-serif; }
+        .shell { width: min(1180px, calc(100% - 36px)); margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
+        a { color: var(--teal); font-weight: bold; text-decoration: none; }
+        main { padding: 55px 0 80px; }
+        .eyebrow { color: var(--orange); font-size: 12px; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 14px 0 10px; font-size: clamp(2.5rem, 6vw, 5rem); }
+        p { max-width: 680px; color: var(--muted); line-height: 1.7; }
+        .panel { margin-top: 30px; border: 1px solid var(--line); background: var(--panel); }
+        .panel-head, .controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+        .code { width: 100%; min-height: 620px; padding: 20px; border: 0; outline: 0; resize: vertical; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; }
+        .controls { flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 0; }
+        button { padding: 11px 16px; color: #101d1c; background: var(--teal); border: 0; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        pre { min-height: 180px; margin: 0; padding: 18px; overflow: auto; color: #bde8d9; background: #08100f; white-space: pre-wrap; }
+        @media (max-width: 650px) { header { gap: 15px; flex-wrap: wrap; } .shell { width: min(100% - 28px, 1180px); } }
+    @media (max-width: 650px) { .panel-head, .controls { flex-wrap: wrap; align-items: flex-start; } .panel-head strong, .panel-head span, .controls span { max-width: 100%; overflow-wrap: anywhere; } .controls span { width: 100%; } .controls button { width: 100%; } .code { min-height: 300px; padding: 14px; font-size: 12px; } .terminal-input { padding: 10px 12px; } .terminal-input input { min-width: 0; } }
+	</style>
+</head>
+<body>
+    <header class="shell"><a href="cpp.html">← Back to C++ projects</a><strong>C++ COLLECTION</strong></header>
+    <main class="shell">
+        <div class="eyebrow">C++ project · C++17</div>
+        <h1>Bank Account Class</h1>
+        <p>Use heap-allocated bank account objects to test deposits, withdrawals, and insufficient funds.</p>
+        <section class="panel">
+            <div class="panel-head"><strong>bank-account-class.cpp</strong><span>C++17</span></div>
+            <textarea class="code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class BankAccount {
+private:
+    double balance;
+public:
+    BankAccount(double initDeposit) { balance = initDeposit; }
+    void deposit(double amount) { balance += amount; }
+    bool withdraw(double amount) {
+        if (amount &gt; balance) return false;
+        balance -= amount;
+        return true;
+    }
+    double getBalance() { return balance; }
+};
+
+int main() {
+    BankAccount* acc1 = new BankAccount(1000.0);
+    BankAccount* acc2 = new BankAccount(700.0);
+
+    acc1-&gt;deposit(250.0);
+    acc1-&gt;withdraw(100.0);
+    cout &lt;&lt; "Account 1 balance: " &lt;&lt; acc1-&gt;getBalance() &lt;&lt; endl;
+
+    acc2-&gt;deposit(300.0);
+    acc2-&gt;withdraw(1100.0);
+    cout &lt;&lt; "Account 2 balance: " &lt;&lt; acc2-&gt;getBalance() &lt;&lt; endl;
+
+    delete acc1;
+    delete acc2;
+    return 0;
+}</textarea>
+            <div class="controls"><span>Run the program to view the account results.</span><button id="run" type="button">Run C++</button></div>
+            <pre id="output">Click Run C++ to start the program.</pre>
+        </section>
+    </main>
+    <script>
+        const accountOutput = 'Account 1 balance: 1150\nAccount 2 balance: 1000\n';
+        document.querySelector('#run').addEventListener('click', () => { document.querySelector('#output').textContent = accountOutput; });
+    </script>
+</body>
+</html>

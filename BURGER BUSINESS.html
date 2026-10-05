@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BURGERLICIOUS PRESTIGE v30.16 | THE ULTIMATE MONOLITH</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23ff8c00'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='%23ffffff' font-family='Arial, sans-serif'%3E%F0%9F%8D%94%3C/text%3E%3C/svg%3E">
+    
+    <style>
+        :root {
+            --primary: #FF8C00;
+            --primary-glow: rgba(255, 140, 0, 0.3);
+            --bg: #020202;
+            --panel: #0a0a0a;
+            --card: #121212;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --text-dim: #777;
+            --success: #00ffa3;
+            --danger: #ff3e3e;
+            --warning: #ffcc00;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            height: 100vh; 
+            overflow: hidden; 
+            background-image: radial-gradient(circle at 50% -20%, #1a1a1a, #020202);
+        }
+        .overlay, .auth-card, .btn-glam { pointer-events: auto !important; }
+
+        .hidden { display: none !important; }
+
+        /* SCROLLBAR CUSTOMIZATION */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* UNIVERSAL COMPONENTS */
+        button { cursor: pointer; border: none; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); outline: none; border-radius: 16px; }
+        
+        input, select, textarea { 
+            outline: none; border: 1px solid var(--border); background: rgba(0,0,0,0.4); 
+            color: #fff; border-radius: 16px; padding: 18px; width: 100%; 
+            font-size: 1rem; transition: 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); background: #000; }
+
+        .btn-glam { 
+            background: var(--card); border: 1px solid var(--border); color: #fff; 
+            padding: 10px 20px; font-weight: 700; display: flex; align-items: center; 
+            justify-content: center; gap: 12px; letter-spacing: 0.5px;
+        }
+        .btn-glam:hover { border-color: var(--primary); transform: translateY(-3px); background: #1a1a1a; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .btn-glam.active { background: var(--primary); color: #000; border-color: transparent; box-shadow: 0 15px 30px var(--primary-glow); }
+        .btn-success { background: #00ffa3; color: #000; border-color: transparent; }
+        .btn-success:hover { background: #00d88e; }
+        .btn-danger { background: rgba(255, 62, 62, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+
+        @page { size: 80mm auto; margin: 5mm; }
+        @media print {
+            html, body { width: auto; height: auto; margin: 0; padding: 0; overflow: visible; }
+            body * { visibility: hidden !important; }
+            #printable-area, #printable-area * { visibility: visible !important; }
+            #printable-area { position: relative !important; left: 0 !important; top: 0 !important; width: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+            #printable-area .receipt-paper,
+            #printable-area .z-report-paper { width: 80mm !important; max-width: 80mm !important; margin: 0 auto !important; box-shadow: none !important; border: none !important; }
+            #printable-area table { page-break-inside: avoid !important; }
+            #printable-area tr, #printable-area p, #printable-area div { page-break-inside: avoid !important; page-break-after: auto !important; }
+        }
+
+        /* AUTHENTICATION LAYER */
+        .overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 99999; 
+            display: flex; justify-content: center; align-items: center; backdrop-filter: blur(40px); 
+        }
+        .auth-card { 
+            background: var(--panel); border: 1px solid var(--border); border-radius: 50px; 
+            padding: 60px; width: 550px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+        }
+
+        /* HEADER ARCHITECTURE */
+        header { 
+            height: 100px; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center; padding: 0 50px;
+            backdrop-filter: blur(20px);
+        }
+        .logo-text { font-weight: 900; font-size: 2rem; letter-spacing: -2px; }
+        .logo-text span { color: var(--primary); text-shadow: 0 0 20px var(--primary-glow); }
+
+        /* POS ENGINE LAYOUT */
+        .main-engine { display: grid; grid-template-columns: 1fr 450px; height: calc(100vh - 100px); }
+        
+        .menu-view { overflow-y: auto; padding: 50px; background: transparent; }
+        .category-stripe { 
+            border-left: 8px solid var(--primary); padding-left: 25px; margin: 50px 0 30px 0; 
+            font-size: 1.6rem; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 2px;
+        }
+        
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
+        .item-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 30px; 
+            padding: 15px; text-align: center; cursor: pointer; transition: 0.5s; position: relative; 
+            overflow: hidden;
+        }
+        .item-card:hover { border-color: var(--primary); transform: translateY(-5px) scale(1.01); }
+        .item-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; }
+        .item-card b { font-size: 1rem; display: block; margin-bottom: 5px; }
+        .item-card span { font-weight: 800; color: var(--primary); font-size: 1.2rem; font-family: 'JetBrains Mono'; }
+        .best-seller-badge { position: absolute; top: 10px; right: 10px; background: var(--success); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; }
+        .item-card.oos { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
+
+        /* CART SIDEBAR */
+        .cart-sidebar { 
+            background: rgba(8, 8, 8, 0.95); border-left: 1px solid var(--border); 
+            display: flex; flex-direction: column; padding: 18px 18px 16px; backdrop-filter: blur(26px);
+            width: 100%; max-width: 450px; min-width: 320px; min-height: 0; gap: 0;
+        }
+        .cart-list { flex: 1; min-height: 0; overflow-y: auto; padding-right: 0; margin-bottom: 14px; }
+        .cart-item { 
+            background: var(--card); padding: 10px 12px; border-radius: 18px; margin-bottom: 6px; 
+            border: 1px solid var(--border); position: relative; animation: slideIn 0.35s ease-out; 
+        }
+        .cart-item b { display: block; font-size: 0.92rem; line-height: 1.2; margin-bottom: 3px; }
+        .cart-item small { display: block; line-height: 1.25; margin-top: 3px; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(25px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .cart-total-box { 
+            background: #000; padding: 16px; border-radius: 24px; border: 1px solid var(--border);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25); position: sticky; bottom: 0; z-index: 2;
+        }
+        .cart-total-box > div { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 18px; }
+        .cart-total-box button { width: 100%; height: 64px; font-size: 1.5rem; border-radius: 20px; }
+
+        /* ADMIN SYSTEM */
+        #admin-panel {             position: fixed; inset: 0; background: var(--bg); z-index: 80000; 
+            display: none; grid-template-columns: 350px 1fr; 
+        }
+        .admin-nav { 
+            background: #000; border-right: 1px solid var(--border); padding: 40px 20px; 
+            display: flex; flex-direction: column; gap: 10px; width: 260px;
+        }
+        .admin-nav .btn-glam { padding: 8px 12px; font-size: 0.85rem; text-align: left; }
+        .admin-nav .btn-glam i { margin-right: 6px; }
+        .admin-body { padding: 60px; overflow-y: auto; }
+
+        /* LIST VIEW MENU MANAGER (Requested) */
+        .menu-list-row {
+            background: var(--card); padding: 12px 20px; border-radius: 15px; 
+            border: 1px solid var(--border); display: flex; justify-content: space-between; 
+            align-items: center; margin-bottom: 10px; transition: 0.3s;
+        }
+        .menu-list-row:hover { border-color: var(--primary); background: #181818; }
+
+        /* TABLES */
+        .titan-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .titan-table th { text-align: left; padding: 10px 12px; color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
+        .titan-table tr td { background: var(--card); padding: 10px 12px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .titan-table tr td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
+        .titan-table tr td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+        .low-stock-badge { color: #ff6154; font-weight: 700; font-size: 0.8rem; margin-left: 10px; }
+
+        /* MODAL ARCHITECTURE */
+        .modal-box { 
+            background: var(--panel); border: 2px solid var(--primary); border-radius: 55px; 
+            padding: 40px 40px 28px; width: 700px; max-height: 90vh; overflow-y: auto; position: relative; 
+            box-shadow: 0 0 120px rgba(255, 140, 0, 0.2); 
+        }
+        .scroll-list { background: rgba(0,0,0,0.5); border-radius: 35px; padding: 20px 20px 80px; border: 1px solid var(--border); margin: 15px 0 20px; overflow-y: auto; }
+        
+        /* Z-REPORT STYLING (Requested) */
+        .z-report-paper { 
+            background: #fff; color: #000; padding: 28px; font-family: 'Courier New', Courier, monospace; 
+            width: 100%; max-width: 900px; margin: 0 auto; line-height: 1.5; font-size: 14px; 
+            box-shadow: 0 16px 45px rgba(0,0,0,0.18);
+            border-radius: 22px;
+        }
+        .z-report-paper h2 { margin-bottom: 12px; }
+        .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-top: 16px; }
+        .report-card { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; padding: 14px 16px; }
+        .report-card strong { display: block; margin-bottom: 8px; font-size: 0.95rem; }
+        .report-section-title { margin-top: 24px; margin-bottom: 10px; font-size: 0.98rem; letter-spacing: 1px; text-transform: uppercase; }
+        .report-detail { margin-bottom: 8px; }
+        .report-detail small { color: #444; }
+        .report-grid { display: grid; grid-template-columns: repeat(2, minmax(200px, 1fr)); gap: 14px; }
+        .report-list { list-style: none; margin: 0; padding: 0; }
+        .report-list li { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .report-list li:last-child { border-bottom: none; }
+        .report-list strong { display: inline-block; width: 45%; color: #000; }
+        .report-list span { color: #333; }
+        .hr-dots { border: none; border-top: 1px dotted rgba(0,0,0,0.45); margin: 16px 0; }
+
+        /* RECEIPT STYLING */
+        .receipt-paper {
+            background: #fff; color: #000; padding: 16px 14px; font-family: 'Courier New', Courier, monospace;
+            width: 80mm; max-width: 80mm; margin: 0 auto; line-height: 1.35; font-size: 12px;
+            border: none; box-shadow: none;
+            text-align: left;
+        }
+        .receipt-paper hr { border: none; border-top: 1px dashed #000; margin: 10px 0; }
+
+        @media (max-width: 900px) {
+            body { height: auto; min-height: 100vh; overflow: auto; }
+            .auth-card { width: min(550px, calc(100% - 32px)); padding: 36px 24px; border-radius: 28px; }
+            .auth-card .logo-text { font-size: clamp(1.8rem, 9vw, 2.5rem); }
+            .auth-card p { margin-bottom: 28px !important; letter-spacing: 2px !important; }
+            #pos-shell { min-height: 100vh; }
+            header { height: auto; min-height: 84px; padding: 16px 20px; flex-wrap: wrap; }
+            header > div { flex: 1 1 180px; }
+            header > div:last-child { flex-basis: 100%; justify-content: flex-start; flex-wrap: wrap; }
+            .logo-text { font-size: 1.45rem; }
+            #clock { font-size: 1.15rem !important; padding: 9px 14px !important; }
+            .main-engine { display: flex; flex-direction: column; height: auto; min-height: calc(100vh - 84px); }
+            .menu-view { padding: 28px 18px; overflow: visible; }
+            .cart-sidebar { max-width: none; min-width: 0; min-height: 360px; border-left: 0; border-top: 1px solid var(--border); }
+            .admin-body { padding: 28px 18px; }
+            #admin-panel { display: none; grid-template-columns: 1fr; overflow-y: auto; }
+            .admin-nav { width: 100%; padding: 24px 18px; border-right: 0; border-bottom: 1px solid var(--border); }
+            .admin-nav h2 { margin-bottom: 20px !important; }
+            .modal-box { width: min(700px, calc(100% - 24px)); padding: 28px 18px 22px; border-radius: 28px; }
+            .scroll-list { padding: 14px 12px 30px; border-radius: 20px; }
+            .titan-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+
+        @media (max-width: 520px) {
+            .items-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+            .item-card { padding: 10px; border-radius: 20px; }
+            .item-card img { height: 90px; border-radius: 14px; margin-bottom: 10px; }
+            .item-card b { font-size: .82rem; }
+            .item-card span { font-size: 1rem; }
+            .category-stripe { margin: 30px 0 18px; padding-left: 14px; border-left-width: 5px; font-size: 1.15rem; }
+            .menu-view > div:first-child { margin-bottom: 24px !important; }
+            .menu-view > div:first-child .btn-glam { flex: 0 0 auto; min-height: 42px; padding: 9px 12px; font-size: .72rem; }
+            .cart-total-box > div { align-items: flex-start; flex-direction: column; gap: 4px; }
+            .cart-total-box h2 { font-size: 2.1rem !important; }
+            .report-grid { grid-template-columns: 1fr; }
+            .report-summary { grid-template-columns: 1fr; }
+            #pin-pad-modal > div { width: calc(100% - 24px) !important; padding: 24px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="auth-layer" class="overlay">
+        <div id="debug-badge" style="position:fixed; top:12px; right:12px; z-index:100000; color:#fff; background:rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.1); padding:8px 12px; border-radius:999px; font-size:0.8rem;">AUTH STATUS</div>
+        <div class="auth-card">
+            <h1 class="logo-text">BURGER<span>LICIOUS</span></h1>
+            <p style="color:var(--text-dim); margin-bottom:45px; font-weight:800; font-size:0.9rem; letter-spacing:4px; text-transform:uppercase;">pls input the following before accessing.</p>
+            <input id="log-cashier" placeholder="CASHIER NAME" style="margin-bottom:18px;">
+            <input id="log-email" placeholder="ADMIN EMAIL" style="margin-bottom:18px;">
+            <input id="log-pass" type="password" placeholder="PASSWORD" style="margin-bottom:35px;">
+            <button id="login-btn" type="button" class="btn-glam active" style="width:100%; height:75px; font-size:1.1rem; margin-bottom:20px;" onclick="window.burgerliciousLogin()">LOG IN</button>
+            <button id="signup-btn" type="button" class="btn-glam" style="width:100%; height:60px; font-size:1rem;" onclick="window.openModal('ADMIN_SIGNUP')">SIGN UP</button>
+        </div>
+    </div>
+
+    <div id="pos-shell" class="hidden">
+        <header style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
+            <div class="logo-text">BURGER<span>LICIOUS</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+                <div id="clock" style="font-family:'JetBrains Mono'; font-weight:800; color:var(--primary); font-size:1.8rem; background:rgba(255,255,255,0.05); padding:12px 35px; border-radius:20px; border:1px solid var(--border);">00:00:00</div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
+                <div id="cashier-display" onclick="ui.editCashier()" style="cursor:pointer; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:8px 15px; color:#fff; text-align:right; font-weight:600; min-width:180px;">CASHIER NAME</div>
+                <div id="cashier-edit" style="display:none; gap:5px; align-items:center;">
+                    <input id="cashier-input" placeholder="CASHIER NAME" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:5px 10px; color:#fff; text-align:left; font-weight:600; min-width:180px;" />
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-glam" style="padding:5px 10px; font-size:0.8rem;" onclick="ui.saveCashier()">SAVE</button>
+                        <button class="btn-glam btn-danger" style="padding:5px 10px; font-size:0.8rem;" onclick="ui.cancelCashier()">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button id="open-shift-btn" class="btn-glam" onclick="ui.openShift()">OPEN SHIFT</button>
+                <button id="close-shift-btn" class="btn-glam btn-danger" onclick="ui.closeShift()">CLOSE SHIFT</button>
+                <button class="btn-glam" onclick="admin.requestAccess()"><i class="fas fa-shield-halved"></i> ADMIN</button>
+                <button class="btn-glam btn-danger" onclick="location.reload()"><i class="fas fa-power-off"></i></button>
+            </div>
+        </header>
+
+        <main class="main-engine">
+            <section class="menu-view">
+                <div style="display:flex; gap:10px; margin-bottom:45px; overflow-x:auto; padding-bottom:15px;">
+                    <button class="btn-glam active" onclick="pos.renderMenu('all', this)">ALL CATEGORIES</button>
+                    <button class="btn-glam" onclick="pos.renderMenu('burgers', this)">BURGERS</button>
+                    <button class="btn-glam" onclick="pos.renderMenu('budget', this)">BUDGET MEALS</button>
+                    <button class="btn-glam" onclick="pos.renderMenu('combo', this)">COMBO MEALS</button>
+                    <button class="btn-glam" onclick="pos.renderMenu('sides', this)">SIDES & SNACKS</button>
+                    <button class="btn-glam" onclick="pos.renderMenu('drinks', this)">DRINKS</button>
+                    <button class="btn-glam" onclick="pos.renderMenu('b1t1', this)">🎉 BUY 1 TAKE 1</button>
+                </div>
+                <div id="menu-container"></div>
+            </section>
+
+            <section class="cart-sidebar">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+                    <h3 style="color:var(--primary); letter-spacing:2px; font-weight:900; margin:0;">ACTIVE CART</h3>
+                    <button class="btn-danger" style="padding:10px 18px; font-size:0.8rem; min-height:44px;">RESET</button>
+                </div>
+                <div id="cart-root" class="cart-list"></div>
+                <div class="cart-total-box">
+                    <div>
+                        <span style="font-weight:800; color:var(--text-dim); font-size:1rem;">TOTAL AMOUNT</span>
+                        <h2 id="total-ui" style="color:var(--primary); font-size:2.8rem; font-family:'JetBrains Mono'; margin:0;">₱0.00</h2>
+                    </div>
+                    <button class="btn-glam active" onclick="pos.checkout()">CHECKOUT</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="admin-panel">
+        <aside class="admin-nav">
+            <h2 class="logo-text" style="margin-bottom:50px;">BURGER<span>LICIOUS</span></h2>
+            <button class="btn-glam active" onclick="admin.nav('dash', this)"><i class="fas fa-chart-line"></i> DASHBOARD</button>
+            <button class="btn-glam" onclick="admin.nav('inv', this)"><i class="fas fa-boxes-stacked"></i> INVENTORY</button>
+            <button class="btn-glam" onclick="admin.nav('menu', this)"><i class="fas fa-list-ul"></i> MENU MANAGER</button>
+            <button class="btn-glam" onclick="admin.nav('mod', this)"><i class="fas fa-sliders"></i> MODIFIER ENGINE</button>
+            <button class="btn-glam" onclick="admin.nav('sales', this)"><i class="fas fa-history"></i> SALES LOGS</button>
+            <button class="btn-glam" style="background:#1a1a1a; margin-top:20px;" onclick="ui.openModal('Z_REPORT')"><i class="fas fa-file-invoice-dollar"></i> Z-RECORD</button>
+            <button class="btn-glam" style="background:#1a1a1a;" onclick="ui.openModal('WEEKLY_REPORT')"><i class="fas fa-calendar-week"></i> WEEKLY REPORT</button>
+            <button class="btn-glam" style="background:#1a1a1a; margin-bottom:20px;" onclick="ui.openModal('MONTHLY_REPORT')"><i class="fas fa-calendar"></i> MONTHLY REPORT</button>
+            <button class="btn-glam btn-danger" style="margin-top:auto;" onclick="admin.close()">BACK TO POS</button>
+        </aside>
+        <main class="admin-body" id="admin-root"></main>
+    </div>
+
+    <div id="modal-layer" class="overlay hidden">
+        <div class="modal-box" id="modal-content"></div>
+    </div>
+
+    <div id="pin-pad-modal" class="overlay hidden">
+        <div style="background: var(--panel); border: 3px solid var(--primary); padding: 40px; width: 400px; text-align: center;">
+            <h2 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 20px;">ADMIN PIN</h2>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;">
+                <div id="pin-dot-0" style="width: 40px; height: 40px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-dim); transition: 0.2s;">●</div>
+                <div id="pin-dot-1" style="width: 40px; height: 40px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-dim); transition: 0.2s;">●</div>
+                <div id="pin-dot-2" style="width: 40px; height: 40px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-dim); transition: 0.2s;">●</div>
+                <div id="pin-dot-3" style="width: 40px; height: 40px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-dim); transition: 0.2s;">●</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('1')">1</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('2')">2</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('3')">3</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('4')">4</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('5')">5</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('6')">6</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('7')">7</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('8')">8</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem;" onclick="admin.pinPress('9')">9</button>
+                <button class="btn-glam" style="height: 50px; font-size: 1rem; grid-column: span 2;" onclick="admin.pinPress('0')">0</button>
+                <button class="btn-glam btn-danger" style="height: 50px; font-size: 0.9rem;" onclick="admin.pinClear()">CLEAR</button>
+            </div>
+            <button class="btn-glam" style="width: 100%; height: 50px; margin-top: 10px;" onclick="ui.closeModal()">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="printable-area" class="hidden"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        window.loginFallback = window.loginFallback || function() {
+            alert('Login handler is not available. Please refresh the page.');
+        };
+        window.modalFallback = window.modalFallback || function(type) {
+            alert('Signup handler is not available. Please refresh the page.');
+        };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDr-qSCLOfMtDY4sayq6aqiTTIezqkeLFg",
+            authDomain: "burgersystem-3b546.firebaseapp.com",
+            databaseURL: "https://burgersystem-3b546-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "burgersystem-3b546",
+            storageBucket: "burgersystem-3b546.firebasestorage.app",
+            messagingSenderId: "304703590969",
+            appId: "1:304703590969:web:054d4f984b7ab720fdb3e8",
+            measurementId: "G-ZEXFTVXWVB"
+        };
+        
+        var db; // Global database reference
+        
+        try {
+            if (!firebase.apps || firebase.apps.length === 0) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            window.db = window.db || firebase.database();
+            db = window.db;
+            console.log('Firebase initialized with DB URL:', firebaseConfig.databaseURL);
+            db.ref('.info/connected').on('value', snap => {
+                console.log('Firebase connected:', snap.val());
+            });
+        } catch (e) {
+            console.error('Fallback Firebase init failed:', e);
+            console.error('Check your Firebase configuration and internet connection');
+        }
+
+        var core = window.core = {};
+        var ui = window.ui = {};
+        var admin = window.admin = {};
+        var pos = window.pos = {};
+
+        window.openModal = function(type, data) {
+            if (window.ui && typeof window.ui.openModal === 'function') {
+                return window.ui.openModal(type, data);
+            }
+            return window.modalFallback(type);
+        };
+        window.closeModal = function() {
+            if (window.ui && typeof window.ui.closeModal === 'function') {
+                return window.ui.closeModal();
+            }
+            var layer = document.getElementById('modal-layer');
+            if (layer) layer.classList.add('hidden');
+        };
+        window.burgerliciousCloseModal = window.closeModal;
+
+        window.burgerliciousOpenSignup = function() {
+            var content = document.getElementById('modal-content');
+            if (!content) return alert('Modal content not found.');
+            document.getElementById('modal-layer')?.classList.remove('hidden');
+            content.innerHTML = '<h2>CREATE ADMIN ACCOUNT</h2><br /><input id="signup-email" placeholder="ADMIN EMAIL" style="margin-bottom:18px;" /><br /><input id="signup-pass" type="password" placeholder="PASSWORD" style="margin-bottom:18px;" /><br /><input id="signup-pin" type="password" placeholder="PIN (4 digits)" style="margin-bottom:35px;" /><br /><button class="btn-glam active" style="width:100%" onclick="window.burgerliciousCreateAdminAccount()">CREATE ACCOUNT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="window.burgerliciousCloseModal()">BACK</button>';
+        };
+
+        window.burgerliciousCreateAdminAccount = function() {
+            if (!window.db) return alert('Firebase database not available.');
+            var rawEmail = document.getElementById('signup-email').value.trim().toLowerCase();
+            var pass = document.getElementById('signup-pass').value;
+            var pin = document.getElementById('signup-pin').value;
+            if (!rawEmail || !pass || !pin) return alert('ALL FIELDS REQUIRED');
+            if (pin.length !== 4) return alert('PIN MUST BE 4 DIGITS');
+            var emailKey = rawEmail.replace(/\./g, '_');
+            window.db.ref('admins/' + emailKey).set({ email: rawEmail, pass: pass, pin: pin, createdAt: Date.now() })
+                .then(function() {
+                    alert('ADMIN ACCOUNT CREATED');
+                    window.logActivity('CREATE_ADMIN', { email: rawEmail });
+                    window.burgerliciousCloseModal();
+                })
+                .catch(function(err) {
+                    console.error(err);
+                    alert('Unable to create account.');
+                });
+        };
+        window.ui.createAdminAccount = window.burgerliciousCreateAdminAccount;
+
+        window.burgerliciousLogin = function() {
+            if (!window.db) return alert('Firebase database not available.');
+            var rawEmail = document.getElementById('log-email').value.trim().toLowerCase();
+            var emailKey = rawEmail.replace(/\./g, '_');
+            var pass = document.getElementById('log-pass').value;
+            var cashier = document.getElementById('log-cashier').value.trim();
+            if (!cashier || !rawEmail || !pass) return alert('ALL FIELDS REQUIRED');
+            var loginSuccess = function(data) {
+                user.admin = data || null;
+                user.cashier = cashier;
+                document.getElementById('auth-layer').classList.add('hidden');
+                document.getElementById('pos-shell').classList.remove('hidden');
+                document.getElementById('cashier-display').innerText = cashier;
+                if (typeof window.core.sync === 'function') {
+                    window.core.sync();
+                }
+            };
+            window.db.ref('admins/' + emailKey).once('value', function(snapshot) {
+                var d = snapshot.val();
+                if (d && d.pass === pass) {
+                    loginSuccess(d);
+                    window.logActivity('LOGIN_SUCCESS', { cashier: cashier, email: rawEmail });
+                } else {
+                    alert('INVALID CREDENTIALS');
+                }
+            });
+        };
+
+        // Error and logging handlers
+        window.addEventListener('error', (event) => {
+            console.error('App error:', event.message, event.filename, event.lineno, event.colno);
+            const badge = document.getElementById('debug-badge');
+            if (badge) badge.innerText = 'ERROR';
+        });
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled rejection:', event.reason);
+            const badge = document.getElementById('debug-badge');
+            if (badge) badge.innerText = 'ERROR';
+        });
+
+        // INITIALIZATION
+        let state = { inventory: {}, products: {}, orders: {}, modifiers: {}, cart: [], activeFilter: 'all', stock_logs: {}, shifts: {}, weeklyReports: {}, monthlyReports: {}, currentWeekStart: null, currentWeekStartTs: null, currentMonthStart: null };
+        let user = { admin: null, cashier: "" };
+        let pinStr = "";
+
+        const normalizeRecipe = (recipe) => {
+            if (!recipe) return [];
+            if (Array.isArray(recipe)) {
+                return recipe.filter(Boolean).map(r => ({ id: String(r.id), amt: parseFloat(r.amt) || 0 }));
+            }
+            if (typeof recipe === 'object') {
+                return Object.entries(recipe)
+                    .filter(([key, value]) => value !== undefined && value !== null)
+                    .map(([key, value]) => {
+                        if (value && typeof value === 'object' && ('id' in value || 'amt' in value)) {
+                            return { id: String(value.id || key), amt: parseFloat(value.amt) || 0 };
+                        }
+                        return { id: String(key), amt: parseFloat(value) || 0 };
+                    });
+            }
+            return [];
+        };
+        const normalizeProducts = (products) => {
+            if (!products) return {};
+            return Object.fromEntries(Object.entries(products).map(([id, p]) => [id, { ...p, recipe: normalizeRecipe(p.recipe) }]));
+        };
+        const normalizeModifiers = (modifiers) => {
+            if (!modifiers) return {};
+            return Object.fromEntries(Object.entries(modifiers).map(([id, m]) => [id, { id, ...m, recipe: normalizeRecipe(m.recipe) }]));
+        };
+        const normalizeInventory = (inventory) => {
+            if (!inventory) return {};
+            return Object.fromEntries(Object.entries(inventory).map(([id, item]) => {
+                return [id, {
+                    ...item,
+                    qty: parseFloat(item?.qty) || 0,
+                    cost: parseFloat(item?.cost) || 0,
+                    name: String(item?.name || ''),
+                    category: String(item?.category || ''),
+                    unit: String(item?.unit || '')
+                }];
+            }));
+        };
+
+        window.logActivity = function(action, details = {}) {
+            const payload = {
+                action,
+                details,
+                cashier: user.cashier || null,
+                admin: user.admin?.email || null,
+                timestamp: Date.now()
+            };
+            if (window.db) {
+                db.ref('activity_logs').push(payload).catch(err => console.error('Activity log failed:', err));
+            }
+        };
+
+        const parseCurrency = (value) => parseFloat(String(value).replace(/[^0-9.-]+/g, '')) || 0;
+        const safeText = (value) => String(value || '').replace(/`/g, '&#96;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const getLocalDate = (timestamp) => {
+            const d = new Date(timestamp);
+            return d.toLocaleDateString('en-CA');
+        };
+        const getTimestamp = (value) => Number(value) || 0;
+        const updateLocalInventoryQty = (id, qty) => {
+            if (state.inventory[id]) {
+                state.inventory[id].qty = qty;
+                admin.render();
+                pos.renderMenu(state.activeFilter);
+            }
+        };
+        ui.syncInventoryFromDatabase = function() {
+            if (!window.db) return Promise.reject(new Error('Database not initialized'));
+            return db.ref('inventory').once('value').then(snapshot => {
+                state.inventory = normalizeInventory(snapshot.val() || {});
+                admin.render();
+                pos.renderMenu(state.activeFilter);
+            });
+        };
+        const isTodayLocal = (timestamp) => getLocalDate(timestamp) === getLocalDate(Date.now());
+        const isSameLocalDate = (timestamp, date) => getLocalDate(timestamp) === getLocalDate(date);
+        const getItemModPrice = (item) => {
+            if (item?.mods && Array.isArray(item.mods)) {
+                return item.mods.reduce((sum, m) => sum + (parseFloat(m.price) || 0), 0);
+            }
+            return parseFloat(item?.modPrice) || 0;
+        };
+        const getItemQty = (item) => parseInt(item?.qty, 10) || 1;
+        const getItemLineTotal = (item) => {
+            const basePrice = parseFloat(item?.price) || 0;
+            const modPrice = getItemModPrice(item);
+            const qty = getItemQty(item);
+            return (basePrice + modPrice) * qty;
+        };
+
+        var core = window.core;
+        let paymentsLoaded = false;
+        core.sync = function() {
+                if (!window.db) {
+                    console.error('Database not initialized');
+                    return alert('Firebase database not initialized. Please refresh the page.');
+                }
+                window.db.ref('inventory').on('value', s => { state.inventory = normalizeInventory(s.val() || {}); pos.renderMenu(state.activeFilter); admin.render(); });
+                window.db.ref('products').on('value', s => { state.products = normalizeProducts(s.val() || {}); pos.renderMenu(state.activeFilter); admin.render(); });
+                window.db.ref('orders').on('value', s => { state.orders = s.val() || {}; admin.render(); pos.renderMenu(state.activeFilter); });
+                window.db.ref('modifiers').on('value', s => { state.modifiers = normalizeModifiers(s.val() || {}); admin.render(); });
+                window.db.ref('stock_logs').on('value', s => { state.stock_logs = s.val() || {}; });
+                window.db.ref('shifts').on('value', s => { state.shifts = s.val() || {}; admin.render(); ui.updateShiftStatus(); });
+                window.db.ref('weeklyReports').on('value', s => { state.weeklyReports = s.val() || {}; admin.render(); });
+                window.db.ref('monthlyReports').on('value', s => { state.monthlyReports = s.val() || {}; admin.render(); });
+                window.db.ref('metaData').on('value', s => { const meta = s.val() || {}; state.currentWeekStart = meta.currentWeekStart; state.currentWeekStartTs = meta.currentWeekStartTs || null; state.currentMonthStart = meta.currentMonthStart; admin.render(); ui.updateShiftStatus(); });
+                window.db.ref('payments').once('value').then(() => { paymentsLoaded = true; });
+                window.db.ref('payments').on('child_added', s => {
+                    if (!paymentsLoaded) return;
+                    const p = s.val();
+                    if (p.cashier === user.cashier) {
+                        alert(`GCash Payment Received: ₱${p.amount.toFixed(2)}`);
+                    }
+                });
+                setInterval(() => { const clk = document.getElementById('clock'); if (clk) clk.innerText = new Date().toLocaleTimeString(); }, 1000);
+                setTimeout(ui.updateShiftStatus, 500);
+        };
+
+        ui.getActiveShift = function() {
+            return Object.entries(state.shifts || {}).map(([id, s]) => ({ id, ...s })).find(s => s.status === 'open');
+        };
+
+        ui.getLatestShiftToday = function() {
+            const todayKey = getLocalDate(Date.now());
+            const allShifts = Object.entries(state.shifts || {}).map(([id, s]) => ({ id, ...s }));
+            const todayOpenShift = allShifts.find(s => s.status === 'open' && s.date === todayKey);
+            if (todayOpenShift) return todayOpenShift;
+            return allShifts.filter(s => s.date === todayKey).sort((a, b) => (b.startTime || 0) - (a.startTime || 0))[0];
+        };
+
+        ui.getWeekStart = function(date = new Date()) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            const weekStart = new Date(d.setDate(diff));
+            return weekStart.toISOString().slice(0, 10);
+        };
+
+        ui.getCurrentWeekStart = function() {
+            return state.currentWeekStart || null;
+        };
+
+        ui.getCurrentWeekStartTs = function() {
+            return state.currentWeekStartTs || null;
+        };
+
+        ui.getLatestCompletedWeeklyReport = function() {
+            const reports = Object.values(state.weeklyReports || {});
+            if (!reports.length) return null;
+            return reports.sort((a, b) => getTimestamp(b.weekStartTs || b.createdAt) - getTimestamp(a.weekStartTs || a.createdAt))[0];
+        };
+
+        ui.getReportWeekStart = function() {
+            if (state.currentWeekStart) return state.currentWeekStart;
+            const latest = ui.getLatestCompletedWeeklyReport();
+            return latest ? latest.weekStart : ui.getWeekStart();
+        };
+
+        ui.getReportWeekEnd = function() {
+            const latest = ui.getLatestCompletedWeeklyReport();
+            if (state.currentWeekStart) {
+                const d = new Date(ui.getReportWeekStart());
+                d.setDate(d.getDate() + 6);
+                return d.toISOString().slice(0, 10);
+            }
+            return latest ? latest.weekEnd : (() => { const d = new Date(ui.getReportWeekStart()); d.setDate(d.getDate() + 6); return d.toISOString().slice(0, 10); })();
+        };
+
+        ui.getCurrentWeeklyRange = function() {
+            const activeStartTs = getTimestamp(ui.getCurrentWeekStartTs());
+            const latest = ui.getLatestCompletedWeeklyReport();
+            if (activeStartTs) {
+                const displayedStart = state.currentWeekStart || getLocalDate(activeStartTs);
+                const displayEnd = new Date(displayedStart);
+                displayEnd.setDate(displayEnd.getDate() + 6);
+                return {
+                    isActive: true,
+                    activeStartTs,
+                    weekStart: displayedStart,
+                    weekEnd: displayEnd.toISOString().slice(0, 10),
+                    dateFilter: o => getTimestamp(o.timestamp) >= activeStartTs && getTimestamp(o.timestamp) <= displayEnd.getTime()
+                };
+            }
+            if (latest) {
+                return {
+                    isActive: false,
+                    activeStartTs: null,
+                    weekStart: latest.weekStart,
+                    weekEnd: latest.weekEnd,
+                    dateFilter: o => {
+                        const startTs = getTimestamp(latest.weekStartTs) || new Date(latest.weekStart).getTime();
+                        const endTs = getTimestamp(latest.weekEndTs) || new Date(latest.weekEnd).getTime();
+                        return getTimestamp(o.timestamp) >= startTs && getTimestamp(o.timestamp) <= endTs;
+                    }
+                };
+            }
+            const fallbackStart = ui.getWeekStart();
+            const fallbackEnd = new Date(fallbackStart);
+            fallbackEnd.setDate(fallbackEnd.getDate() + 6);
+            return {
+                isActive: false,
+                activeStartTs: null,
+                weekStart: fallbackStart,
+                weekEnd: fallbackEnd.toISOString().slice(0, 10),
+                dateFilter: o => {
+                    const date = getLocalDate(o.timestamp);
+                    return date >= fallbackStart && date <= fallbackEnd.toISOString().slice(0, 10);
+                }
+            };
+        };
+
+        ui.getMonthStart = function(date = new Date()) {
+            const d = new Date(date);
+            return d.toISOString().slice(0, 7) + '-01';
+        };
+
+        ui.calculateWeeklyStats = function() {
+            const range = ui.getCurrentWeeklyRange();
+            const reportOrders = Object.values(state.orders || {}).filter(range.dateFilter);
+            const totalSalesBefore = reportOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+            const costBefore = reportOrders.reduce((sum, o) => sum + ui.calculateIngredientCostForOrder(o), 0);
+            const orderCount = reportOrders.length;
+            const shiftsCount = Object.values(state.shifts || {}).filter(s => s.status === 'closed' && (() => {
+                if (range.isActive) {
+                    return (getTimestamp(s.endTime) && getTimestamp(s.endTime) >= range.activeStartTs) || (getTimestamp(s.startTime) && getTimestamp(s.startTime) >= range.activeStartTs);
+                }
+                return s.date >= range.weekStart && s.date <= range.weekEnd;
+            })()).length;
+            const netBefore = totalSalesBefore - costBefore;
+            return { totalSales: totalSalesBefore, ingredientCost: costBefore, netSales: netBefore, shiftsCount, orderCount };
+        };
+
+        ui.calculateWeeklyUsage = function() {
+            const range = ui.getCurrentWeeklyRange();
+            const weekOrders = Object.values(state.orders || {}).filter(range.dateFilter);
+            const usage = {};
+            weekOrders.forEach(o => {
+                (o.items || []).forEach(item => {
+                    const itemQty = getItemQty(item);
+                    if (Array.isArray(item.recipe)) {
+                        item.recipe.forEach(r => {
+                            if (r && r.id && typeof r.amt === 'number') {
+                                const inv = state.inventory[r.id] || {};
+                                if (!usage[r.id]) {
+                                    usage[r.id] = {
+                                        id: r.id,
+                                        name: inv.name || 'Unknown',
+                                        qty: 0,
+                                        costPerUnit: parseFloat(inv.cost) || 0,
+                                        stockLeft: typeof inv.qty !== 'undefined' ? inv.qty : null,
+                                        unit: inv.unit || 'units'
+                                    };
+                                }
+                                usage[r.id].qty += r.amt * itemQty;
+                            }
+                        });
+                    }
+                });
+            });
+            const usageList = Object.values(usage).map(u => ({
+                ...u,
+                totalCost: u.qty * u.costPerUnit
+            })).sort((a, b) => b.qty - a.qty);
+            const totalUsedCost = usageList.reduce((sum, item) => sum + item.totalCost, 0);
+            return { usage: usageList, totalUsedCost, weekOrders };
+        };
+
+        ui.calculateMonthlyStats = function(monthStart) {
+            const monthKey = monthStart.slice(0, 7);
+            const monthReports = Object.values(state.weeklyReports || {}).filter(r => r.month === monthKey);
+            const totalSales = monthReports.reduce((sum, r) => sum + (parseFloat(r.totalSales) || 0), 0);
+            const cost = monthReports.reduce((sum, r) => sum + (parseFloat(r.ingredientCost) || 0), 0);
+            const netSales = totalSales - cost;
+            const monthOrders = Object.values(state.orders || {}).filter(o => {
+                if (!o.timestamp) return false;
+                const date = getLocalDate(o.timestamp);
+                return date.startsWith(monthKey);
+            });
+            const totalOrderCount = monthOrders.length;
+            const totalItemsSold = monthOrders.reduce((sum, o) => sum + ((o.items || []).reduce((itemSum, i) => itemSum + (parseFloat(i.qty) || 0), 0)), 0);
+            const totalInventoryCost = Object.values(state.inventory || {}).reduce((sum, inv) => sum + ((parseFloat(inv.cost) || 0) * (parseFloat(inv.qty) || 0)), 0);
+
+            return {
+                totalSales,
+                ingredientCost: cost,
+                netSales,
+                weeksCount: monthReports.length,
+                totalOrders: totalOrderCount,
+                totalItemsSold,
+                totalInventoryCost
+            };
+        };
+
+        ui.endOfWeekInventory = function() {
+            if (!user.cashier) return alert('Please login to end the week.');
+            if (!state.currentWeekStartTs) return alert('No active weekly inventory to end. Start the week first.');
+            const weekStart = ui.getCurrentWeekStart();
+            const stats = ui.calculateWeeklyStats(weekStart);
+            if (stats.shiftsCount === 0) return alert('No closed shifts this week.');
+            
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            const weekKey = weekStart + '_to_' + weekEnd.toISOString().slice(0, 10);
+            const reportData = {
+                weekStart,
+                weekEnd: weekEnd.toISOString().slice(0, 10),
+                weekStartTs: state.currentWeekStartTs,
+                weekEndTs: weekEnd.getTime(),
+                month: weekStart.slice(0, 7),
+                totalSales: stats.totalSales,
+                ingredientCost: stats.ingredientCost,
+                netSales: stats.netSales,
+                shiftsCount: stats.shiftsCount,
+                createdAt: Date.now()
+            };
+            db.ref('weeklyReports/' + weekKey).set(reportData);
+            db.ref('metaData/currentWeekStart').remove();
+            db.ref('metaData/currentWeekStartTs').remove();
+            state.currentWeekStart = null;
+            state.currentWeekStartTs = null;
+            alert(`Week ended. Total sales: ₱${stats.totalSales.toFixed(2)}, Ingredient cost: ₱${stats.ingredientCost.toFixed(2)}, Net: ₱${stats.netSales.toFixed(2)}. Start a new weekly inventory when ready.`);
+            ui.openModal('WEEKLY_REPORT');
+        };
+
+        ui.startWeeklyInventory = function() {
+            if (!user.cashier) return alert('Please login to start the week.');
+            if (state.currentWeekStartTs) return alert('Weekly inventory is already active. End the current week before starting a new one.');
+            const today = getLocalDate(Date.now());
+            const nowTs = Date.now();
+            db.ref('metaData/currentWeekStart').set(today);
+            db.ref('metaData/currentWeekStartTs').set(nowTs);
+            state.currentWeekStart = today;
+            state.currentWeekStartTs = nowTs;
+            alert('Weekly inventory started. Stock from previous week carries forward automatically.');
+        };
+
+        ui.getMonthEnd = function(monthStart) {
+            const date = new Date(monthStart);
+            date.setMonth(date.getMonth() + 1);
+            date.setDate(0);
+            return date.toISOString().slice(0, 10);
+        };
+
+        ui.endOfMonthInventory = function() {
+            if (!user.cashier) return alert('Please login to end the month.');
+            const monthStart = state.currentMonthStart || ui.getMonthStart();
+            const stats = ui.calculateMonthlyStats(monthStart);
+            const monthKey = monthStart.slice(0, 7);
+            const monthEnd = ui.getMonthEnd(monthStart);
+            const reportData = {
+                monthStart,
+                monthEnd,
+                totalSales: stats.totalSales,
+                ingredientCost: stats.ingredientCost,
+                netSales: stats.netSales,
+                totalOrders: stats.totalOrders,
+                totalItemsSold: stats.totalItemsSold,
+                weeksCount: stats.weeksCount,
+                createdAt: Date.now()
+            };
+            db.ref('monthlyReports/' + monthKey).set(reportData);
+
+            const nextMonth = new Date(monthStart);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            const nextMonthStart = ui.getMonthStart(nextMonth);
+            db.ref('metaData/currentMonthStart').set(nextMonthStart);
+            state.currentMonthStart = nextMonthStart;
+            alert(`Month ended. New monthly period started: ${nextMonthStart}. Total sales: ₱${stats.totalSales.toFixed(2)}, Ingredient cost: ₱${stats.ingredientCost.toFixed(2)}, Net: ₱${stats.netSales.toFixed(2)}`);
+            ui.openModal('MONTHLY_REPORT');
+        };
+
+        ui.startMonthlyInventory = function() {
+            if (!user.cashier) return alert('Please login to start the month.');
+            const newMonthStart = ui.getMonthStart();
+            db.ref('metaData/currentMonthStart').set(newMonthStart);
+            state.currentMonthStart = newMonthStart;
+            alert('Monthly inventory started. Data will now be grouped by month.');
+        };
+
+        ui.calculateIngredientCostForOrder = function(order) {
+            let cost = 0;
+            (order.items || []).forEach(item => {
+                const qty = item.qty || 1;
+                if (item.recipe && Array.isArray(item.recipe)) {
+                    item.recipe.forEach(r => {
+                        cost += ((state.inventory[r.id]?.cost || 0) * (r.amt || 0)) * qty;
+                    });
+                }
+            });
+            return cost;
+        };
+
+        ui.updateShiftStatus = function() {
+            const openBtn = document.getElementById('open-shift-btn');
+            const closeBtn = document.getElementById('close-shift-btn');
+            const shift = ui.getActiveShift();
+            if (shift && shift.status === 'open') {
+                if (openBtn) {
+                    openBtn.classList.add('btn-success');
+                    openBtn.classList.remove('btn-danger');
+                }
+                if (closeBtn) {
+                    closeBtn.classList.add('btn-danger');
+                    closeBtn.classList.remove('btn-success');
+                }
+            } else {
+                if (openBtn) {
+                    openBtn.classList.add('btn-danger');
+                    openBtn.classList.remove('btn-success');
+                }
+                if (closeBtn) {
+                    closeBtn.classList.add('btn-success');
+                    closeBtn.classList.remove('btn-danger');
+                }
+            }
+        };
+
+        ui.openShift = function() {
+            if (!user.cashier) return alert('Please login first to open a shift.');
+            if (ui.getActiveShift()) return alert('A shift is already open. Close it before opening a new one.');
+            const ref = window.db.ref('shifts').push();
+            ref.set({
+                startTime: Date.now(),
+                status: 'open',
+                cashier: user.cashier,
+                date: getLocalDate(Date.now()),
+                createdAt: Date.now()
+            });
+            window.logActivity('OPEN_SHIFT', { shiftId: ref.key, date: new Date().toISOString().slice(0, 10) });
+            ui.updateShiftStatus();
+            alert('Shift opened successfully.');
+        };
+
+        ui.closeShift = function() {
+            const shift = ui.getActiveShift();
+            if (!shift) return alert('No open shift found.');
+            if (!confirm('Are you sure you want to close the shift?')) return;
+            const endTime = Date.now();
+            const shiftOrders = Object.values(state.orders || {}).filter(o => getTimestamp(o.timestamp) >= getTimestamp(shift.startTime) && getTimestamp(o.timestamp) <= endTime);
+            const totalSales = shiftOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+            const ingredientCost = shiftOrders.reduce((sum, o) => sum + ui.calculateIngredientCostForOrder(o), 0);
+            const netSales = totalSales - ingredientCost;
+            window.db.ref('shifts/' + shift.id).update({
+                endTime,
+                status: 'closed',
+                totalSales,
+                ingredientCost,
+                netSales,
+                totalOrders: shiftOrders.length,
+                closedAt: Date.now()
+            });
+            window.logActivity('CLOSE_SHIFT', { shiftId: shift.id, totalSales, ingredientCost, netSales, totalOrders: shiftOrders.length });
+            ui.updateShiftStatus();
+            alert(`Shift closed. Total sales: ₱${totalSales.toFixed(2)}, Ingredient cost: ₱${ingredientCost.toFixed(2)}`);
+        };
+
+        window.pos.checkStock = function(recipe) {
+            if (!Array.isArray(recipe) || recipe.length === 0) return true;
+            return recipe.every(r => r && typeof r === 'object' && r.id && state.inventory[r.id] && state.inventory[r.id].qty >= r.amt);
+        };
+        window.pos.renderMenu = function(filter = 'all', btn = null) {
+                state.activeFilter = filter;
+                if(btn) { document.querySelectorAll('.menu-view .btn-glam').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+                const root = document.getElementById('menu-container'); root.innerHTML = '';
+                const cats = filter === 'all' ? ['burgers', 'budget', 'combo', 'sides', 'drinks', 'b1t1'] : [filter];
+
+                // Calculate top sellers
+                const orders = Object.values(state.orders);
+                const currentMonth = new Date().toISOString().slice(0, 7);
+                const itemCounts = {};
+                orders.forEach(o => {
+                    const date = o.timestamp ? new Date(o.timestamp).toISOString().slice(0, 10) : '';
+                    if (!date.startsWith(currentMonth)) return;
+                    (o.items || []).forEach(i => {
+                        const key = i.id || i.name;
+                        if (!key) return;
+                        itemCounts[key] = (itemCounts[key] || 0) + (parseFloat(i.qty) || 0);
+                    });
+                });
+                const topSellers = Object.keys(itemCounts).sort((a,b) => itemCounts[b] - itemCounts[a]).slice(0,3);
+
+                cats.forEach(cat => {
+                    const items = Object.entries(state.products).filter(([id, p]) => p.category === cat);
+                    if(items.length > 0) {
+                        if(filter !== 'b1t1') root.innerHTML += `<div class="category-stripe">${cat.replace('_',' ')}</div>`;
+                        root.innerHTML += `<div class="items-grid" id="grid-${cat}"></div>`;
+                        const grid = document.getElementById(`grid-${cat}`);
+                        items.forEach(([id, p]) => {
+                            const avail = pos.checkStock(p.recipe);
+                            const isTop = topSellers.includes(p.id) || topSellers.includes(p.name);
+                            grid.innerHTML += `
+                                <div class="item-card ${avail ? '' : 'oos'}" onclick="ui.openModal('MOD_PICKER', {id:'${id}', category:'${p.category}', ...state.products['${id}']})">
+                                    <img src="${p.img || 'https://via.placeholder.com/300'}" onerror="this.src='https://via.placeholder.com/300'">
+                                    ${isTop ? '<div class="best-seller-badge">★ BEST</div>' : ''}
+                                    <b>${safeText(p.name)}</b>
+                                    <span>₱${p.price.toFixed(2)}</span>
+                                </div>`;
+                        });
+                    }
+                });
+        };
+        window.pos.addToCart = function(item) {
+                const price = parseFloat(item.price) || 0;
+                const mods = Array.isArray(item.mods) ? item.mods.map(m => ({ id: m.id, name: m.name, price: parseFloat(m.price) || 0 })) : [];
+                const normalizedItem = {
+                    ...item,
+                    price,
+                    mods,
+                    modPrice: getItemModPrice({ ...item, mods })
+                };
+                const buildModKey = (modsList = []) => {
+                    return (modsList || []).map(m => `${m.id}:${m.name}:${parseFloat(m.price)||0}`).sort().join('|');
+                };
+                const sameItem = state.cart.find(c =>
+                    c.id === normalizedItem.id &&
+                    c.b1t1 === normalizedItem.b1t1 &&
+                    parseFloat(c.modPrice) === parseFloat(normalizedItem.modPrice) &&
+                    buildModKey(c.mods) === buildModKey(normalizedItem.mods)
+                );
+                if (sameItem) {
+                    sameItem.qty = getItemQty(sameItem) + 1;
+                } else {
+                    state.cart.push({ ...normalizedItem, qty: 1, cartId: Date.now() });
+                }
+                pos.updateCart(); ui.closeModal();
+        };
+        window.pos.updateCart = function() {
+                const root = document.getElementById('cart-root'); let total = 0;
+                root.innerHTML = state.cart.map(i => {
+                    const qty = getItemQty(i);
+                    const basePrice = parseFloat(i.price) || 0;
+                    const modPrice = getItemModPrice(i);
+                    const modDetails = i.mods ? i.mods.map(m => `<small style="color:var(--warning);">${m.name} +₱${(parseFloat(m.price) || 0).toFixed(2)}</small>`).join('<br>') : '';
+                    const sub = getItemLineTotal(i);
+                    total += sub;
+                    return `<div class="cart-item" style="padding:10px 12px; margin-bottom:6px; border-radius:15px; background:var(--card); border:1px solid var(--border); position:relative;">
+                        <button style="position:absolute; right:8px; top:8px; background:var(--danger); color:#fff; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-size:0.95rem;" onclick="pos.removeItem(${i.cartId})">×</button>
+                        <b style="font-size:0.9rem;">${safeText(i.name)} ${qty > 1 ? `x${qty}` : ''} ${i.b1t1 ? '<span style="background:var(--success); color:#000; padding:2px 5px; border-radius:4px; font-size:0.7rem; margin-left:5px; font-weight:800;">B1T1</span>' : ''}</b>
+                        <div style="text-align:right; font-weight:900; color:var(--success); font-size:1.05rem; margin-top:4px;">₱${(basePrice + modPrice).toFixed(2)}</div>
+                        ${modDetails ? `<div style="margin-top:4px;">${modDetails}</div>` : ''}
+                        <div style="text-align:right; font-weight:900; color:var(--primary); font-size:1.1rem; margin-top:4px; border-top:1px solid var(--border); padding-top:4px;">Total: ₱${sub.toFixed(2)}</div>
+                    </div>`;
+                }).join('');
+                document.getElementById('total-ui').innerText = `₱${total.toFixed(2)}`;
+        };
+        window.pos.removeItem = function(cid) { state.cart = state.cart.filter(i => i.cartId !== cid); pos.updateCart(); };
+        window.pos.clearCart = function() { if(confirm("ABANDON CART?")) { state.cart = []; pos.updateCart(); } };
+        window.pos.checkout = function() {
+            if (state.cart.length === 0) return alert("CART IS EMPTY");
+            const activeShift = ui.getActiveShift();
+            if (!activeShift) return alert("Cannot process sale: shift is closed. Please open a shift first.");
+            ui.openModal('PAYMENT');
+        };
+
+        ui.orderType = 'dine-in';
+        ui.openModal = function(type, data = null) {
+                if (!data || typeof data !== 'object' || Array.isArray(data)) data = {};
+                data.name = String(data.name || '');
+                data.id = String(data.id || '');
+                data.img = String(data.img || '');
+                data.unit = String(data.unit || '');
+                const content = document.getElementById('modal-content'); document.getElementById('modal-layer').classList.remove('hidden');
+                const safeModalName = String(data.name || '');
+                const safeModalId = String(data.id || '');
+                
+                if(type === 'ADD_STOCK') {
+                    content.innerHTML = `<h2>ADD STOCK</h2><br /><p><strong>${data.name}</strong></p><p>Current quantity: ${data.qty}</p><br /><input id="stock-add-qty" type="number" min="1" placeholder="QUANTITY TO ADD" /><br /><br /><input id="stock-id" type="hidden" value="${data.id}" /><button class="btn-glam active" style="width:100%" onclick="ui.saveStock()">ADD STOCK</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'STOCK_LOGS') {
+                    const logs = Object.values(state.stock_logs || {}).sort((a,b) => b.timestamp - a.timestamp);
+                    const rows = logs.map(l => `<tr><td>${safeText(l.ingredient)}</td><td>${l.change > 0 ? '+'+l.change : l.change}</td><td>${l.newQty}</td><td>${new Date(l.timestamp).toLocaleString()}</td></tr>`).join('');
+                    content.innerHTML = `<h2>STOCK LOGS</h2><br /><table class="titan-table" style="width:100%;"><thead><tr><th>Ingredient</th><th>Change</th><th>New Total</th><th>Timestamp</th></tr></thead><tbody>${rows}</tbody></table><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'ADD_ITEM' || type === 'EDIT_ITEM') {
+                    if (type === 'EDIT_ITEM' && data?.id && state.products[data.id]) {
+                        window.currentProductData = { id: data.id, ...state.products[data.id] };
+                    } else {
+                        window.currentProductData = data || {};
+                    }
+                    window.currentProductData.recipe = normalizeRecipe(window.currentProductData.recipe);
+                    const groupedInv = {};
+                    Object.entries(state.inventory).forEach(([id, i]) => {
+                        const cat = (i.category || 'other').toLowerCase();
+                        if (!groupedInv[cat]) groupedInv[cat] = [];
+                        groupedInv[cat].push([id, i]);
+                    });
+                    const allCats = Object.keys(groupedInv).sort();
+                    window.switchRecipeCat = (cat, btn) => {
+                        document.querySelectorAll('#inv-list-container .cat-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        // Save current checked items before switching (only if items are already rendered)
+                        if (document.querySelectorAll('.r-chk:checked').length > 0) {
+                            const currentRecipe = [];
+                            document.querySelectorAll('.r-chk:checked').forEach(c => {
+                                const amt = parseFloat(document.querySelector(`.r-qty[data-id="${c.dataset.id}"]`).value);
+                                if (amt > 0) currentRecipe.push({ id: c.dataset.id, amt });
+                            });
+                            window.currentProductData.recipe = currentRecipe.map(r => ({ id: String(r.id), amt: parseFloat(r.amt) || 0 }));
+                        }
+                        const recipeMap = window.currentProductData.recipe.reduce((m, r) => { if(r && r.id) m[String(r.id)] = r.amt; return m; }, {});
+                        let html = '';
+                        if(cat === 'all') {
+                            allCats.forEach(c => {
+                                if(groupedInv[c]) {
+                                    html += `<div style="margin-bottom:15px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:6px 14px; border-radius:8px; font-weight:900; font-size:0.8rem; margin-bottom:10px;">${c.toUpperCase()}</div></div>`;
+                                    html += groupedInv[c].map(([id, i]) => {
+                                        const checked = recipeMap[id] !== undefined ? 'checked="checked"' : '';
+                                        const qty = recipeMap[id] !== undefined ? recipeMap[id] : 1;
+                                        return `<div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px; margin-bottom:8px; margin-left:5px;"><input type="checkbox" class="r-chk" data-id="${id}" ${checked} style="width:25px; height:25px; cursor:pointer; accent-color:var(--primary);" onchange="window.updateRecipeList()" /><span style="flex:1; font-size:0.95rem;">${i.name}</span><input type="number" class="r-qty" data-id="${id}" value="${qty}" style="width:50px; padding:5px; text-align:center; font-size:0.9rem; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-radius:5px; color:#fff;" min="0.1" step="0.1" onchange="window.updateRecipeList()" /></div>`;
+                                    }).join('');
+                                }
+                            });
+                        } else {
+                            if(groupedInv[cat]) {
+                                html += `<div style="margin-bottom:15px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:6px 14px; border-radius:8px; font-weight:900; font-size:0.8rem;">${cat.toUpperCase()}</div></div>`;
+                                html += groupedInv[cat].map(([id, i]) => {
+                                    const checked = recipeMap[id] !== undefined ? 'checked="checked"' : '';
+                                    const qty = recipeMap[id] !== undefined ? recipeMap[id] : 1;
+                                    return `<div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px; margin-bottom:8px;"><input type="checkbox" class="r-chk" data-id="${id}" ${checked} style="width:25px; height:25px; cursor:pointer; accent-color:var(--primary);" onchange="window.updateRecipeList()" /><span style="flex:1; font-size:0.95rem;">${i.name}</span><input type="number" class="r-qty" data-id="${id}" value="${qty}" style="width:50px; padding:5px; text-align:center; font-size:0.9rem; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-radius:5px; color:#fff;" min="0.1" step="0.1" onchange="window.updateRecipeList()" /></div>`;
+                                }).join('');
+                            }
+                        }
+                        document.getElementById('inv-list').innerHTML = html || '<div style="text-align:center; color:var(--text-dim); padding:20px;">No inventory items available. Please add items to the inventory first.</div>';
+                        updateRecipeList();
+                    };
+                    const catButtons = ['all', ...allCats].map(cat => `<button class="btn-glam cat-btn ${cat === 'all' ? 'active' : ''}" style="margin:0 5px 10px 0; padding:8px 15px; font-size:0.8rem;" data-cat="${cat}" onclick="switchRecipeCat(this.dataset.cat, this)">${cat.toUpperCase()}</button>`).join('');
+                    window.updateRecipeList = () => {
+                        const checked = [];
+                        let totalCost = 0;
+                        document.querySelectorAll('.r-chk:checked').forEach(c => {
+                            const id = c.dataset.id;
+                            const categoryKey = Object.keys(groupedInv).find(cat => groupedInv[cat].some(([iid]) => iid === id));
+                            const ingredient = groupedInv[categoryKey]?.find(([iid]) => iid === id);
+                            const name = ingredient ? ingredient[1]?.name : 'Unknown';
+                            const unitCost = ingredient ? parseFloat(ingredient[1]?.cost) || 0 : 0;
+                            const qtyInput = document.querySelector('.r-qty[data-id="' + id + '"]');
+                            const qty = parseFloat(qtyInput?.value) || 1;
+                            checked.push({ id, name, qty, unitCost });
+                            totalCost += unitCost * qty;
+                        });
+                        window.currentProductData.recipe = checked.map(c => ({ id: c.id, amt: parseFloat(c.qty) }));
+                        const recipeLines = checked.length > 0 ? checked.map(i => '- ' + i.name + ' (Qty: ' + i.qty + ')').join('<br>') : 'None selected';
+                        document.getElementById('recipe-list').innerHTML = '<div style="background:rgba(0,255,163,0.1); border:1px solid var(--success); border-radius:10px; padding:12px; margin-top:15px;"><div style="color:var(--success); font-weight:900; margin-bottom:10px; font-size:0.9rem;">SELECTED INGREDIENTS (' + checked.length + '):</div><div style="font-size:0.85rem;">' + recipeLines + '</div><div style="margin-top:10px; font-size:0.85rem; color:#000;"><strong>Total Ingredient Cost:</strong> ₱' + totalCost.toFixed(2) + '</div></div>';
+                    };
+                    content.innerHTML = `<h2>PRODUCT SETUP</h2><br /><input id="mp_name" placeholder="PRODUCT NAME" value="${String(data?.name || '').replace(/"/g, '&quot;')}" /><br /><br /><input id="mp_price" type="number" placeholder="BASE PRICE" value="${data?.price ?? ''}" /><br /><br /><select id="mp_cat" onchange="document.getElementById('subcat-row').style.display = this.value === 'sides' ? 'block' : 'none';"><option value="burgers" ${data?.category==='burgers'?'selected':''}>BURGERS</option><option value="budget" ${data?.category==='budget'?'selected':''}>BUDGET MEAL</option><option value="combo" ${data?.category==='combo'?'selected':''}>COMBO MEAL</option><option value="sides" ${data?.category==='sides'?'selected':''}>SIDES/SNACKS</option><option value="drinks" ${data?.category==='drinks'?'selected':''}>DRINKS</option><option value="b1t1" ${data?.category==='b1t1'?'selected':''}>BUY 1 TAKE 1</option></select><br /><br />
+                        <div id="subcat-row" style="display:${data?.category==='sides' ? 'block' : 'none'}; margin-bottom:18px;">
+                            <label style="font-size:0.9rem; color:var(--text-dim);">SIDES GROUP</label><br />
+                            <select id="mp_subcat" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.05); color:#fff;">
+                                <option value="">General Sides</option>
+                                <option value="fries" ${data?.subcategory==='fries'?'selected':''}>Fries</option>
+                                <option value="cheese stick" ${data?.subcategory==='cheese stick'?'selected':''}>Cheese Stick</option>
+                                <option value="ice cream" ${data?.subcategory==='ice cream'?'selected':''}>Ice Cream</option>
+                                <option value="snacks" ${data?.subcategory==='snacks'?'selected':''}>Snacks</option>
+                                <option value="other" ${data?.subcategory==='other'?'selected':''}>Other</option>
+                            </select>
+                        </div>
+                        <input id="mp_img" placeholder="IMAGE URL" value="${String(data?.img || '').replace(/"/g, '&quot;')}" /><br /><small style="color:var(--text-dim);">Paste a direct image URL here if available.</small><br /><br /><input type="file" id="mp_img_file" accept="image/*" /><br /><small style="color:var(--text-dim);">Or upload a local image file if the URL does not work.</small><br /><br /><h4>RECIPE BUILDER:</h4><br /><div id="inv-list-container" style="margin-bottom:15px;"></div><div id="recipe-list"></div><div class="scroll-list" id="inv-list"></div><button class="btn-glam active" style="width:100%" onclick="ui.saveProduct('${data?.id || ''}')">SAVE PRODUCT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                    document.getElementById('inv-list-container').innerHTML = catButtons;
+                    switchRecipeCat('all', document.querySelector('#inv-list-container .cat-btn.active'));
+                    updateRecipeList();
+                    document.querySelectorAll('.r-chk').forEach(cb => cb.addEventListener('change', window.updateRecipeList));
+                    document.querySelectorAll('.r-qty').forEach(inp => inp.addEventListener('change', window.updateRecipeList));
+                }
+                else if(type === 'ADD_MOD' || type === 'EDIT_MOD') {
+                    if (type === 'EDIT_MOD' && data?.id && state.modifiers[data.id]) {
+                        window.currentModData = { id: data.id, ...state.modifiers[data.id] };
+                    } else {
+                        window.currentModData = data || {};
+                    }
+                    window.currentModData.recipe = normalizeRecipe(window.currentModData.recipe);
+                    const groupedInv = {};
+                    Object.entries(state.inventory).forEach(([id, i]) => {
+                        const cat = (i.category || 'other').toLowerCase();
+                        if (!groupedInv[cat]) groupedInv[cat] = [];
+                        groupedInv[cat].push([id, i]);
+                    });
+                    const allCats = Object.keys(groupedInv).sort();
+                    window.switchModCat = (cat, btn) => {
+                        document.querySelectorAll('#mod-inv-list-container .cat-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        // Save current checked items before switching (only if items are already rendered)
+                        if (document.querySelectorAll('.m-chk:checked').length > 0) {
+                            const currentRecipe = [];
+                            document.querySelectorAll('.m-chk:checked').forEach(c => {
+                                const amt = parseFloat(document.querySelector(`.m-qty[data-id="${c.dataset.id}"]`).value);
+                                if (amt > 0) currentRecipe.push({ id: c.dataset.id, amt });
+                            });
+                            window.currentModData.recipe = currentRecipe;
+                        }
+                        const recipeMap = window.currentModData.recipe.reduce((m, r) => { if(r && r.id) m[String(r.id)] = r.amt; return m; }, {});
+                        let html = '';
+                        if(cat === 'all') {
+                            allCats.forEach(c => {
+                                if(groupedInv[c]) {
+                                    html += `<div style="margin-bottom:15px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:6px 14px; border-radius:8px; font-weight:900; font-size:0.8rem; margin-bottom:10px;">${c.toUpperCase()}</div></div>`;
+                                    html += groupedInv[c].map(([id, i]) => {
+                                        const checked = recipeMap[id] !== undefined ? 'checked="checked"' : '';
+                                        const qty = recipeMap[id] !== undefined ? recipeMap[id] : 1;
+                                        return `<div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px; margin-bottom:8px; margin-left:5px;"><input type="checkbox" class="m-chk" data-id="${id}" ${checked} style="width:25px; height:25px; cursor:pointer; accent-color:var(--primary);" onchange="window.updateModRecipeList()" /><span style="flex:1; font-size:0.95rem;">${i.name}</span><input type="number" class="m-qty" data-id="${id}" value="${qty}" style="width:50px; padding:5px; text-align:center; font-size:0.9rem; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-radius:5px; color:#fff;" min="0.1" step="0.1" onchange="window.updateModRecipeList()" /></div>`;
+                                    }).join('');
+                                }
+                            });
+                        } else {
+                            if(groupedInv[cat]) {
+                                html += `<div style="margin-bottom:15px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:6px 14px; border-radius:8px; font-weight:900; font-size:0.8rem;">${cat.toUpperCase()}</div></div>`;
+                                html += groupedInv[cat].map(([id, i]) => {
+                                    const checked = recipeMap[id] !== undefined ? 'checked="checked"' : '';
+                                    const qty = recipeMap[id] !== undefined ? recipeMap[id] : 1;
+                                    return `<div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px; margin-bottom:8px;"><input type="checkbox" class="m-chk" data-id="${id}" ${checked} style="width:20px; height:20px; cursor:pointer; accent-color:var(--primary);" onchange="window.updateModRecipeList()" /><span style="flex:1; font-size:0.95rem;">${i.name}</span><input type="number" class="m-qty" data-id="${id}" value="${qty}" style="width:50px; padding:5px; text-align:center; font-size:0.9rem; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-radius:5px; color:#fff;" min="0.1" step="0.1" onchange="window.updateModRecipeList()" /></div>`;
+                                }).join('');
+                            }
+                        }
+                        document.getElementById('mod-inv-list').innerHTML = html || '<div style="text-align:center; color:var(--text-dim); padding:20px;">No inventory items available. Please add items to the inventory first.</div>';
+                        updateModRecipeList();
+                    };
+                    const catButtons = ['all', ...allCats].map(cat => `<button class="btn-glam cat-btn ${cat === 'all' ? 'active' : ''}" style="margin:0 5px 10px 0; padding:8px 15px; font-size:0.8rem;" data-cat="${cat}" onclick="switchModCat(this.dataset.cat, this)">${cat.toUpperCase()}</button>`).join('');
+                    let initialHtml = '';
+                    const normalizedModRecipe = normalizeRecipe(data?.recipe);
+                    const initialRecipeMap = normalizedModRecipe.reduce((m, r) => { if(r && r.id) m[String(r.id)] = r.amt; return m; }, {});
+                    allCats.forEach(c => {
+                        if(groupedInv[c]) {
+                            const recipeMap = initialRecipeMap;
+                            initialHtml += `<div style="margin-bottom:15px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:6px 14px; border-radius:8px; font-weight:900; font-size:0.8rem; margin-bottom:10px;">${c.toUpperCase()}</div></div>`;
+                            initialHtml += groupedInv[c].map(([id, i]) => {
+                                const checked = recipeMap[id] !== undefined ? 'checked="checked"' : '';
+                                const qty = recipeMap[id] !== undefined ? recipeMap[id] : 1;
+                                return `<div style="display:flex; align-items:center; gap:12px; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px; margin-bottom:8px; margin-left:5px;"><input type="checkbox" class="m-chk" data-id="${id}" ${checked} style="width:25px; height:25px; cursor:pointer; accent-color:var(--primary);" /><span style="flex:1; font-size:0.95rem;">${i.name}</span><input type="number" class="m-qty" data-id="${id}" value="${qty}" style="width:50px; padding:5px; text-align:center; font-size:0.9rem; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-radius:5px; color:#fff;" min="0.1" step="0.1" /></div>`;
+                            }).join('');
+                        }
+                    });
+                    window.updateModRecipeList = () => {
+                        const checked = [];
+                        let totalCost = 0;
+                        document.querySelectorAll('.m-chk:checked').forEach(c => {
+                            const id = String(c.dataset.id);
+                            const categoryKey = Object.keys(groupedInv).find(cat => groupedInv[cat].some(([iid]) => String(iid) === id));
+                            const ingredient = groupedInv[categoryKey]?.find(([iid]) => String(iid) === id);
+                            const name = ingredient ? ingredient[1]?.name : 'Unknown';
+                            const unitCost = ingredient ? parseFloat(ingredient[1]?.cost) || 0 : 0;
+                            const qty = parseFloat(document.querySelector(`.m-qty[data-id="${id}"]`)?.value) || 1;
+                            checked.push({ id, name, qty, unitCost });
+                            totalCost += unitCost * qty;
+                        });
+                        window.currentModData.recipe = checked.map(c => ({ id: String(c.id), amt: parseFloat(c.qty) || 0 }));
+                        document.getElementById('mod-recipe-list').innerHTML = `<div style="background:rgba(0,255,163,0.1); border:1px solid var(--success); border-radius:10px; padding:12px; margin-top:15px;"><div style="color:var(--success); font-weight:900; margin-bottom:10px; font-size:0.9rem;">SELECTED INGREDIENTS (${checked.length}):</div><div style="font-size:0.85rem;">${checked.length > 0 ? checked.map(i => `- ${i.name} (Qty: ${i.qty})`).join('<br>') : 'None selected'}</div><div style="margin-top:10px; font-size:0.85rem; color:#000;"><strong>Total Ingredient Cost:</strong> ₱${totalCost.toFixed(2)}</div></div>`;
+                    };
+                    content.innerHTML = `
+                        <h2>MODIFIER CONFIG</h2><br />
+                        <input id="m_name" placeholder="MODIFIER NAME" value="${String(data?.name || '').replace(/"/g, '&quot;')}" /><br /><br />
+                        <input id="m_price" type="number" placeholder="ADDITIONAL FEE" value="${data?.price ?? ''}" /><br /><br />
+                        <select id="m_type">
+                            <option value="addon" ${data?.type==='addon'?'selected':''}>ADD-ON (BURGERS)</option>
+                            <option value="drink_type" ${data?.type==='drink_type'?'selected':''}>DRINK TYPE (BUDGET, COMBO)</option>
+                            <option value="drink_size" ${data?.type==='drink_size'?'selected':''}>DRINK SIZE (PAID)</option>
+                            <option value="sides_addon" ${data?.type==='sides_addon'?'selected':''}>SIDES ADD-ON</option>
+                        </select><br /><br />
+                        <h4>RECIPE BUILDER (OPTIONAL):</h4><br />
+                        <div id="mod-inv-list-container" style="margin-bottom:15px;"></div>
+                        <div id="mod-recipe-list"></div>
+                        <div class="scroll-list" id="mod-inv-list" style="max-height:400px;"></div>
+                        <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn-glam" style="flex:1; min-width:0; width:auto; height:56px;" onclick="ui.closeModal()">CANCEL</button>
+                            <button class="btn-glam active" style="flex:1; min-width:0; width:auto; height:56px;" onclick="ui.saveMod('${data?.id || ''}')">SAVE MODIFIER</button>
+                        </div>`;
+
+                    document.getElementById('mod-inv-list-container').innerHTML = catButtons;
+                    switchModCat('all', document.querySelector('#mod-inv-list-container .cat-btn.active'));
+                    updateModRecipeList();
+                    document.querySelectorAll('.m-chk').forEach(cb => cb.addEventListener('change', window.updateModRecipeList));
+                    document.querySelectorAll('.m-qty').forEach(inp => inp.addEventListener('change', window.updateModRecipeList));
+                }
+                else if(type === 'MOD_PICKER') {
+                    const cat = String(data.category || '');
+                    const isDrink = cat === 'drinks';
+                    const isSide = cat === 'sides';
+                    const isBurger = cat === 'burgers';
+                    const isBudget = cat === 'budget';
+                    const isCombo = cat === 'combo';
+                    const isMeal = (cat === 'budget' || cat === 'combo');
+                    const isB1T1 = cat === 'b1t1';
+                    const safeModalNameEscaped = safeModalName.replace(/'/g, "\\\'");
+                    
+                    const burgerAddons = Object.entries(state.modifiers).filter(([id,m])=>m.type==='addon').map(([id,m])=>`<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222; font-size:0.95rem;"><span>${String(m.name || '').replace(/"/g, '&quot;').replace(/</g, '&lt;')} (+₱${m.price})</span><input type="checkbox" class="sel-mod" data-id="${id}" data-price="${m.price}" style="width:20px; height:20px;"></div>`).join('');
+                    const sideAddons = Object.entries(state.modifiers).filter(([id,m])=>m.type==='sides_addon').map(([id,m])=>`<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #222; font-size:0.95rem;"><span>${String(m.name || '').replace(/"/g, '&quot;').replace(/</g, '&lt;')} (+₱${m.price})</span><input type="checkbox" class="sel-mod" data-id="${id}" data-price="${m.price}" style="width:20px; height:20px;"></div>`).join('');
+                    const flavors = Object.entries(state.modifiers).filter(([id,m])=>m.type==='drink_type').map(([id,m])=>`<option value="${id}">${String(m.name || '').replace(/"/g, '&quot;')}</option>`).join('');
+                    const sizes = Object.entries(state.modifiers).filter(([id,m])=>m.type==='drink_size').map(([id,m])=>`<option value="${id}">${String(m.name || '').replace(/"/g, '&quot;')} (+₱${m.price})</option>`).join('');
+                    const b1t1Promos = Object.entries(state.modifiers).filter(([id,m])=>m.type==='sides_addon').map(([id,m])=>`<div style="display:flex; justify-content:space-between; padding:12px; background:rgba(0,255,163,0.1); border:1px solid var(--success); border-radius:10px; margin-bottom:10px; align-items:center;"><span style="color:var(--success); font-weight:800;">${String(m.name || '').replace(/"/g, '&quot;')}</span><input type="radio" name="b1t1-promo" class="sel-b1t1" data-id="${id}" data-price="${m.price || 0}" style="width:20px; height:20px;"></div>`).join('');
+
+                    if(isB1T1) {
+                        content.innerHTML = `
+                            <h1 style="color:var(--primary); margin-bottom:30px;">🎉 BUY 1 TAKE 1 - <span style="color:#00ffa3;">${data.name.replace(/'/g, '\\\'')}</span></h1>
+                            
+                            <p style="font-weight:800; color:var(--primary); margin-bottom:10px;">BURGER ADD-ONS (OPTIONAL):</p>
+                            <div class="scroll-list">${burgerAddons}</div>
+
+                            <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px; margin-top:30px;">
+                                <button class="btn-glam" style="height:80px;" onclick="ui.closeModal()">CANCEL</button>
+                                <button class="btn-glam active" style="height:80px; font-size:1.5rem;" onclick="ui.commitOrderFromData('${data.id}')">ADD TO CART</button>
+                            </div>`;
+                    } else {
+                        content.innerHTML = `
+                            <h1 style="color:var(--primary); margin-bottom:30px;">CUSTOMIZE <span style="color:#00ffa3;">${data.name.replace(/'/g, '\\\'')}</span></h1>
+                            
+                            ${isMeal ? `
+                                <p style="font-weight:800; color:var(--success); margin-bottom:10px;">SELECT DRINK TYPE (FREE):</p>
+                                <select id="s-flav"><option value="">Choose drink type</option>${flavors}</select><br /><br />
+                            ` : ''}
+                            
+                            ${isMeal || isDrink ? `
+                                <p style="font-weight:800; margin-bottom:10px;">UPGRADE DRINK SIZE:</p>
+                                <select id="s-size"><option value="">REGULAR (₱0)</option>${sizes}</select><br /><br />
+                            ` : ''}
+
+                            ${isSide ? `
+                                <p style="font-weight:800; color:var(--primary); margin-bottom:10px;">SIDES ADD-ONS (OPTIONAL):</p>
+                                <div class="scroll-list">${sideAddons}</div><br />
+                            ` : ''}
+
+                            ${isBurger ? `
+                                <p style="font-weight:800; color:var(--primary); margin-bottom:10px;">BURGER ADD-ONS (OPTIONAL):</p>
+                                <div class="scroll-list">${burgerAddons}</div>
+                            ` : ''}
+
+                            ${isMeal ? `
+                                <p style="font-weight:800; color:var(--primary); margin-bottom:10px;">BURGER ADD-ONS (OPTIONAL):</p>
+                                <div class="scroll-list">${burgerAddons}</div>
+                            ` : ''}
+
+                            ${isCombo ? `
+                                <p style="font-weight:800; color:var(--primary); margin-bottom:10px;">SIDES ADD-ONS (OPTIONAL):</p>
+                                <div class="scroll-list">${sideAddons}</div><br />
+                            ` : ''}
+
+                            <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px; margin-top:30px;">
+                                <button class="btn-glam" style="height:80px;" onclick="ui.closeModal()">CANCEL</button>
+                                <button class="btn-glam active" style="height:80px; font-size:1.5rem;" onclick="ui.commitOrderFromData('${data.id}')">ADD TO CART</button>
+                            </div>`;
+                    }
+                }
+                else if(type === 'PAYMENT') {
+                    const total = parseCurrency(document.getElementById('total-ui').innerText);
+                    content.innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 600px;">
+                            <div>
+                                <h2>PAYMENT PORTAL</h2><br />
+                                <label>Order Type:</label><br />
+                                <select id="order-type" onchange="ui.orderType = this.value;">
+                                    <option value="dine-in" ${ui.orderType === 'dine-in' ? 'selected' : ''}>Dine In</option>
+                                    <option value="take-out" ${ui.orderType === 'take-out' ? 'selected' : ''}>Take Out</option>
+                                </select><br /><br />
+                                <div id="payment-options">
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                                        <button class="btn-glam active" style="height:100px; font-size:1.2rem;" onclick="ui.selectPayment('CASH')">CASH</button>
+                                        <button class="btn-glam active" style="height:100px; font-size:1.2rem; background:#005ce6;" onclick="ui.selectPayment('GCASH')">GCASH</button>
+                                    </div>
+                                </div>
+                                <div id="cash-payment" style="display:none;">
+                                    <label>Amount Paid:</label><br />
+                                    <input id="cash-amount" type="number" step="0.01" placeholder="0.00" oninput="ui.calculateChange()" /><br /><br />
+                                    <button class="btn-glam active" onclick="ui.processCash()">CONFIRM PAYMENT</button>
+                                    <div id="change-display" style="margin-top:20px; font-size:1.2rem; color:var(--success);"></div>
+                                </div>
+                                <div id="gcash-payment" style="display:none;">
+                                    <div id="gcash-qr" style="width:200px; height:200px; border-radius:20px; background:#fff; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:12px; color:#000;">Generating QR...</div><br />
+                                    <div style="text-align:center; font-size:0.85rem; color:var(--text-dim); margin-bottom:10px;">Scan the QR code with GCash and press CONFIRM PAYMENT when the customer has completed the transfer.</div>
+                                    <button class="btn-glam active" id="gcash-scan-btn" onclick="ui.simulateGcash()">SCAN QR / PREPARE PAYMENT</button>
+                                    <button class="btn-glam active hidden" id="gcash-pay-btn" style="margin-top:12px;" onclick="ui.completeGcashPayment()">CONFIRM PAYMENT</button>
+                                    <div id="gcash-status" style="margin-top:20px; font-size:1.2rem; color:var(--warning);"></div>
+                                </div>
+                            </div>
+                            <div id="receipt-preview" style="background:#fff; padding:14px; border-radius:16px; border:1px solid #ccc; overflow-y:auto; max-height:500px;">
+                                <div class="receipt-paper" style="font-family:'Courier New', Courier, monospace; color:#111;">
+                                    <h2 style="margin:0; font-size:18px; letter-spacing:2px; text-align:center;">BURGERLICIOUS</h2>
+                                    <p style="margin:4px 0; font-size:9px; text-align:center;">BUCANA, NASUGBU, BATANGAS</p>
+                                    <p style="margin:4px 0; font-size:9px; text-align:center;">TIN: 123-456-789</p>
+                                    <p style="margin:4px 8px 10px; font-size:10px; text-align:center;">${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+                                    <hr style="margin:8px 0; border:none; border-top:1px dashed #000;" />
+                                    ${state.cart.map(item => {
+                                        const qty = getItemQty(item);
+                                        const basePrice = parseFloat(item.price) || 0;
+                                        const itemModPrice = getItemModPrice(item);
+                                        const lineTotal = getItemLineTotal(item);
+                                        return `<div style="text-align:left; margin:4px 0; font-size:10px; line-height:1.3;">
+                                            <div><strong>${safeText(item.name)}</strong>${item.b1t1 ? ' [B1T1]' : ''}${qty > 1 ? ` x${qty}` : ''}</div>
+                                            <div style="margin-top:2px; color:#555;">₱${basePrice.toFixed(2)}${itemModPrice > 0 ? ` + ₱${itemModPrice.toFixed(2)} = ₱${lineTotal.toFixed(2)}` : ''}</div>
+                                            ${item.mods && item.mods.length ? `<div style="margin-top:2px; color:#888; font-size:9px;">Add-ons:<br>${item.mods.map(m => `- ${safeText(m.name)} +₱${(parseFloat(m.price)||0).toFixed(2)}`).join('<br>')}</div>` : ''}
+                                        </div>`;
+                                    }).join('')}
+                                    <hr style="margin:8px 0;" />
+                                    <div style="text-align:left; font-size:11px; line-height:1.4;"><strong>TOTAL:</strong><span style="float:right;">₱${total.toFixed(2)}</span></div>
+                                    <div id="payment-details" style="text-align:left; font-size:10px; line-height:1.4;"></div>
+                                    <br />
+                                    <p style="font-size:9px; margin:8px 0 0;">Have a Burgerlicious day! Hope you enjoyed and see you again!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'ADMIN_SIGNUP') {
+                    content.innerHTML = `<h2>CREATE ADMIN ACCOUNT</h2><br /><input id="signup-email" placeholder="ADMIN EMAIL" style="margin-bottom:18px;" /><br /><input id="signup-pass" type="password" placeholder="PASSWORD" style="margin-bottom:18px;" /><br /><input id="signup-pin" type="password" placeholder="PIN (4 digits)" style="margin-bottom:35px;" /><br /><button class="btn-glam active" style="width:100%" onclick="ui.createAdminAccount()">CREATE ACCOUNT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'ADD_ING' || type === 'EDIT_ING') {
+                    window.currentInventoryData = data;
+                    content.innerHTML = `<h2>INGREDIENT CONFIG</h2><br /><input id="mi_name" placeholder="INGREDIENT NAME" value="${String(data?.name || '').replace(/"/g, '&quot;')}" /><br /><br /><input id="mi_img" placeholder="IMAGE URL (optional)" value="${String(data?.img || '').replace(/"/g, '&quot;')}" /><br /><br /><select id="mi_cat"><option value="burger" ${data?.category==='burger'?'selected':''}>BURGER</option><option value="drinks" ${data?.category==='drinks'?'selected':''}>DRINKS</option><option value="sides" ${data?.category==='sides'?'selected':''}>SIDES</option><option value="other" ${data?.category==='other'?'selected':''}>OTHER</option></select><br /><br /><input id="mi_qty" type="number" placeholder="INITIAL QTY" value="${data?.qty ?? ''}" /><br /><br /><input id="mi_unit" placeholder="UNIT (pcs / grams / ml)" value="${String(data?.unit || '').replace(/"/g, '&quot;')}" /><br /><br /><input id="mi_cost" type="number" step="0.01" placeholder="COST PER UNIT" value="${data?.cost ?? ''}" /><br /><br /><button class="btn-glam active" style="width:100%" onclick="ui.saveIng('${data?.id || ''}')">SAVE INGREDIENT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'VIEW_ORDER') {
+                    const o = state.orders[data?.id] || {};
+                    const orderItems = (o.items || []).map(i => `<p>${safeText(i.name)} - ₱${parseFloat(i.price)||0} ${i.mods ? i.mods.map(m => `+${safeText(m.name)} ₱${parseFloat(m.price)||0}`).join(' ') : ''}</p>`).join('');
+                    content.innerHTML = `<h2>ORDER DETAILS</h2><p><strong>Date:</strong> ${o.timestamp ? new Date(o.timestamp).toLocaleString() : 'N/A'}</p><p><strong>Total:</strong> ₱${parseFloat(o.total)||0}</p><p><strong>Method:</strong> ${safeText(o.method)}</p><p><strong>Cashier:</strong> ${safeText(o.cashier)}</p><p><strong>Type:</strong> ${safeText(o.orderType)}</p><h3>Items:</h3>${orderItems}<button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'Z_REPORT') {
+                    const today = getLocalDate(Date.now());
+                    const shift = ui.getLatestShiftToday();
+                    const reportOrders = Object.values(state.orders).filter(o => {
+                        if (!o.timestamp) return false;
+                        const ts = getTimestamp(o.timestamp);
+                        if (shift && shift.date === today) {
+                            return ts >= getTimestamp(shift.startTime) && (!shift.endTime || ts <= getTimestamp(shift.endTime));
+                        }
+                        return isTodayLocal(o.timestamp);
+                    });
+                    const total = reportOrders.reduce((a,b)=>a + (parseFloat(b.total) || 0), 0);
+                    const cashTotal = reportOrders.filter(o=>o.method==='CASH').reduce((a,b)=>a + (parseFloat(b.total) || 0), 0);
+                    const gcashTotal = reportOrders.filter(o=>o.method==='GCASH').reduce((a,b)=>a + (parseFloat(b.total) || 0), 0);
+                    const totalPaid = reportOrders.reduce((a,b)=>a + (parseFloat(b.paid) || parseFloat(b.total) || 0), 0);
+                    const totalChange = reportOrders.reduce((a,b)=>a + (parseFloat(b.change) || 0), 0);
+                    const ingredientCost = reportOrders.reduce((a,b)=>a + ui.calculateIngredientCostForOrder(b), 0);
+                    const netSales = total - ingredientCost;
+                    const dineIn = reportOrders.filter(o=>o.orderType==='dine-in').length;
+                    const takeOut = reportOrders.filter(o=>o.orderType==='take-out').length;
+                    const shiftLabel = shift ? `<strong>Shift:</strong> ${safeText(shift.cashier || 'Unknown')}<br /><strong>Opened:</strong> ${new Date(shift.startTime).toLocaleString()}<br />${shift.endTime ? `<strong>Closed:</strong> ${new Date(shift.endTime).toLocaleString()}<br />` : '<strong>Status:</strong> OPEN<br />'}` : '';
+                    content.innerHTML = `
+                        <div class="z-report-paper" id="z-final">
+                            <center><h2 style="letter-spacing:5px;">Z-REPORT</h2>BURGERLICIOUS<br />123 Burger Street, Flavor Town<br />${today}<br />Report Generated: ${new Date().toLocaleString()}</center><hr class="hr-dots">
+                            ${shiftLabel}
+                            <h3 class="report-section-title">TRANSACTION SUMMARY</h3>
+                            <ul class="report-list">
+                                <li><strong>Total Transactions</strong><span>${reportOrders.length}</span></li>
+                                <li><strong>Total Sales</strong><span>₱${total.toFixed(2)}</span></li>
+                                <li><strong>Ingredient Cost</strong><span>₱${ingredientCost.toFixed(2)}</span></li>
+                                <li><strong>Net Sales</strong><span>₱${netSales.toFixed(2)}</span></li>
+                                <li><strong>Cash Sales</strong><span>₱${cashTotal.toFixed(2)}</span></li>
+                                <li><strong>GCash Sales</strong><span>₱${gcashTotal.toFixed(2)}</span></li>
+                                <li><strong>Dine-In Orders</strong><span>${dineIn}</span></li>
+                                <li><strong>Take-Out Orders</strong><span>${takeOut}</span></li>
+                                <li><strong>Total Paid</strong><span>₱${totalPaid.toFixed(2)}</span></li>
+                                <li><strong>Total Change</strong><span>₱${totalChange.toFixed(2)}</span></li>
+                            </ul>
+                            <hr class="hr-dots">
+                            <h3 class="report-section-title">DETAILED TRANSACTIONS</h3>
+                            <ul class="report-list">
+                                ${reportOrders.map(o => `
+                                    <li>
+                                        <strong>${new Date(o.timestamp).toLocaleString()}</strong><span>${o.method} - ₱${(parseFloat(o.total)||0).toFixed(2)} (${o.orderType}) - Cashier: ${safeText(o.cashier)}</span>
+                                        <ul style="margin:8px 0 0 12px; padding-left:12px; list-style:disc; color:#333;">
+                                            ${o.items.map(i => `<li style="margin-bottom:3px; font-size:0.92rem;">${safeText(i.name)} (${safeText(i.modNames || 'Regular')})</li>`).join('')}
+                                        </ul>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div><br /><button class="btn-glam active" style="width:100%;" onclick="ui.printReport('z-final')">PRINT REPORT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'WEEKLY_REPORT') {
+                    const weekStart = ui.getReportWeekStart();
+                    const activeStartTs = getTimestamp(ui.getCurrentWeekStartTs());
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekEnd.getDate() + 6);
+                    const weekEndStr = weekEnd.toISOString().slice(0, 10);
+                    const stats = ui.calculateWeeklyStats();
+                    const usageStats = ui.calculateWeeklyUsage();
+                    const weeklyActive = !!activeStartTs;
+                    const endButtonClass = weeklyActive ? 'btn-glam btn-success active' : 'btn-glam btn-danger';
+                    const startButtonClass = weeklyActive ? 'btn-glam btn-danger' : 'btn-glam btn-success active';
+                    const activeLabel = weeklyActive
+                        ? '<div style="margin:12px 0; padding:10px; background:#e6ffed; color:#127a2e; border-radius:14px; font-weight:800; text-align:center;">ACTIVE WEEKLY PERIOD</div>'
+                        : '<div style="margin:12px 0; padding:10px; background:#ffe6e6; color:#a00; border-radius:14px; font-weight:800; text-align:center;">NO ACTIVE WEEKLY PERIOD</div>';
+                    if (!weeklyActive) {
+                        content.innerHTML = `
+                            <div class="z-report-paper" id="weekly-report" style="width:100%; max-width:800px;">
+                                <center><h2 style="letter-spacing:5px;">WEEKLY INVENTORY REPORT</h2>BURGERLICIOUS<br />No active weekly inventory.<br />Start a weekly inventory to begin tracking.</center>
+                                ${activeLabel}
+                                <hr class="hr-dots">
+                                <div style="padding:20px; border-radius:18px; background:#fff8f0; color:#a00; font-weight:800; text-align:center;">Past weekly reports are hidden until a new weekly inventory starts.</div>
+                                <div style="display:flex; gap:20px; margin-top:20px;">
+                                    <button class="btn-glam btn-danger" style="flex:1;" disabled>END OF WEEK INVENTORY</button>
+                                    <button class="btn-glam btn-success active" style="flex:1;" onclick="ui.startWeeklyInventory()">START WEEKLY INVENTORY</button>
+                                </div>
+                            </div><br /><button class="btn-glam active" style="width:100%;" onclick="ui.printReport('weekly-report')" disabled>PRINT REPORT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                        return;
+                    }
+                    content.innerHTML = `
+                        <div class="z-report-paper" id="weekly-report" style="width:100%; max-width:800px;">
+                            <center><h2 style="letter-spacing:5px;">WEEKLY INVENTORY REPORT</h2>BURGERLICIOUS<br />Week: ${weekStart} to ${weekEndStr}<br />Report Generated: ${new Date().toLocaleString()}</center>
+                            ${activeLabel}
+                            <hr class="hr-dots">
+                            <h3 class="report-section-title">WEEKLY SUMMARY</h3>
+                            <ul class="report-list">
+                                <li><strong>Total Orders</strong><span>${stats.orderCount}</span></li>
+                                <li><strong>Closed Shifts</strong><span>${stats.shiftsCount}</span></li>
+                                <li><strong>Total Sales</strong><span>₱${stats.totalSales.toFixed(2)}</span></li>
+                                <li><strong>Total Ingredient Cost</strong><span>₱${stats.ingredientCost.toFixed(2)}</span></li>
+                                <li><strong>Net Sales</strong><span style="color:var(--success);">₱${stats.netSales.toFixed(2)}</span></li>
+                            </ul>
+                            <hr class="hr-dots">
+                            <h3 class="report-section-title">USED INGREDIENTS THIS WEEK</h3>
+                            <ul class="report-list">
+                                ${usageStats.usage.length > 0 ? usageStats.usage.map(item => `
+                                    <li>
+                                        <strong>${safeText(item.name)}</strong><span>Used ${item.qty} ${item.unit}</span>
+                                        <div style="font-size:0.92rem; color:#333; margin-top:4px;">Cost/Unit: ₱${item.costPerUnit.toFixed(2)} · Used Cost: ₱${item.totalCost.toFixed(2)}${item.stockLeft !== null ? ' · Stock Left: ' + item.stockLeft + ' ' + item.unit : ''}</div>
+                                    </li>
+                                `).join('') : '<li><span>No ingredients were used this week.</span></li>'}
+                            </ul>
+                            <hr class="hr-dots">
+                            <div style="display:flex; gap:20px; margin-top:20px;">
+                                <button class="${endButtonClass}" style="flex:1;" onclick="ui.endOfWeekInventory()">END OF WEEK INVENTORY</button>
+                                <button class="${startButtonClass}" style="flex:1;" onclick="ui.startWeeklyInventory()">START WEEKLY INVENTORY</button>
+                            </div>
+                        </div><br /><button class="btn-glam active" style="width:100%;" onclick="ui.printReport('weekly-report')">PRINT REPORT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+                else if(type === 'MONTHLY_REPORT') {
+                    const monthStart = state.currentMonthStart || ui.getMonthStart();
+                    const stats = ui.calculateMonthlyStats(monthStart);
+                    const monthReports = Object.values(state.weeklyReports || {}).filter(r => r.month === monthStart.slice(0, 7));
+                    content.innerHTML = `
+                        <div class="z-report-paper" id="monthly-report" style="width:100%; max-width:900px;">
+                            <center><h2 style="letter-spacing:5px;">MONTHLY REPORT</h2>BURGERLICIOUS<br />Month: ${monthStart}<br />Report Generated: ${new Date().toLocaleString()}</center><hr class="hr-dots">
+                            <h3 class="report-section-title">MONTHLY SUMMARY</h3>
+                            <ul class="report-list">
+                                <li><strong>Weeks</strong><span>${stats.weeksCount}</span></li>
+                                <li><strong>Total Orders</strong><span>${stats.totalOrders}</span></li>
+                                <li><strong>Total Items Sold</strong><span>${stats.totalItemsSold}</span></li>
+                                <li><strong>Total Sales</strong><span>₱${stats.totalSales.toFixed(2)}</span></li>
+                                <li><strong>Total Ingredient Cost</strong><span>₱${stats.ingredientCost.toFixed(2)}</span></li>
+                                <li><strong>Total Ingredient Inventory Value</strong><span>₱${stats.totalInventoryCost.toFixed(2)}</span></li>
+                                <li><strong>Monthly Net Sales</strong><span style="color:var(--success);">₱${stats.netSales.toFixed(2)}</span></li>
+                            </ul>
+                            <hr class="hr-dots">
+                            <h3 class="report-section-title">WEEKLY BREAKDOWN</h3>
+                            <ul class="report-list">
+                                ${monthReports.map(r => `
+                                    <li>
+                                        <strong>${r.weekStart} to ${r.weekEnd}</strong>
+                                        <div style="font-size:0.92rem; color:#333; margin-top:4px;">Shifts: ${r.shiftsCount} · Sales: ₱${(r.totalSales || 0).toFixed(2)} · Cost: ₱${(r.ingredientCost || 0).toFixed(2)} · Net: ₱${(r.netSales || 0).toFixed(2)}</div>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            <div style="display:flex; gap:20px; margin-top:20px;">
+                                <button class="btn-glam" style="flex:1;" onclick="ui.endOfMonthInventory()">END MONTHLY REPORT</button>
+                                <button class="btn-glam active" style="flex:1;" onclick="ui.startMonthlyInventory()">START MONTHLY REPORT</button>
+                            </div>
+                        </div><br /><button class="btn-glam active" style="width:100%;" onclick="ui.printReport('monthly-report')">PRINT REPORT</button><button class="btn-glam" style="width:100%; margin-top:20px;" onclick="ui.closeModal()">BACK</button>`;
+                }
+        };
+        ui.selectPayment = function(method) {
+                document.getElementById('payment-options').style.display = 'none';
+                document.getElementById('cash-payment').style.display = 'none';
+                document.getElementById('gcash-payment').style.display = 'none';
+                if (method === 'CASH') {
+                    document.getElementById('cash-payment').style.display = 'block';
+                } else if (method === 'GCASH') {
+                    document.getElementById('gcash-payment').style.display = 'block';
+                    const qrDiv = document.getElementById('gcash-qr');
+                    if (qrDiv) {
+                        qrDiv.innerHTML = 'Generating QR...';
+                        const total = parseCurrency(document.getElementById('total-ui').innerText) || 0;
+                        const gcashPayload = `GCASH PAYMENT\nAmount: ₱${total.toFixed(2)}\nMerchant: 09171234567\nRef: ${Date.now()}`;
+                        const remoteUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(gcashPayload)}`;
+                        qrDiv.innerHTML = `<img src="${remoteUrl}" alt="GCash QR Code" style="width:100%; height:100%; object-fit:contain; border-radius:18px; background:#fff;" />`;
+                    }
+                }
+        };
+        ui.calculateChange = function() {
+                const total = parseCurrency(document.getElementById('total-ui').innerText);
+                const paid = parseFloat(document.getElementById('cash-amount').value) || 0;
+                const change = paid - total;
+                const display = document.getElementById('change-display');
+                if (change >= 0) {
+                    display.innerHTML = `<b>Change: ₱${change.toFixed(2)}</b>`;
+                    display.style.color = 'var(--success)';
+                } else {
+                    display.innerHTML = `<b>Insufficient: ₱${Math.abs(change).toFixed(2)} more needed</b>`;
+                    display.style.color = 'var(--danger)';
+                }
+        };
+        ui.processCash = function() {
+                const total = parseCurrency(document.getElementById('total-ui').innerText);
+                const paid = parseFloat(document.getElementById('cash-amount').value);
+                if (isNaN(paid) || paid < total) {
+                    alert('Insufficient amount paid');
+                    return;
+                }
+                const change = paid - total;
+                document.getElementById('change-display').innerHTML = `<b>Change: ₱${change.toFixed(2)}</b>`;
+                document.getElementById('payment-details').innerHTML = `<div><strong>PAID:</strong><span style="float:right;">₱${paid.toFixed(2)}</span></div><div><strong>CHANGE:</strong><span style="float:right;">₱${change.toFixed(2)}</span></div>`;
+                setTimeout(() => ui.finalize('CASH', paid, change), 1000);
+        };
+        ui.simulateGcash = function() {
+                const status = document.getElementById('gcash-status');
+                const scanBtn = document.getElementById('gcash-scan-btn');
+                const payBtn = document.getElementById('gcash-pay-btn');
+                status.innerHTML = 'Scanning QR code... Please wait.';
+                status.style.color = 'var(--warning)';
+                if (scanBtn) scanBtn.disabled = true;
+                setTimeout(() => {
+                    status.innerHTML = 'QR scanned. Confirm payment when transfer is complete.';
+                    status.style.color = 'var(--success)';
+                    if (payBtn) payBtn.classList.remove('hidden');
+                    if (scanBtn) scanBtn.classList.add('hidden');
+                    document.getElementById('payment-details').innerHTML = '<div><strong>METHOD:</strong><span style="float:right;">GCash</span></div>';
+                }, 1500);
+        };
+        ui.completeGcashPayment = function() {
+                const status = document.getElementById('gcash-status');
+                const total = parseCurrency(document.getElementById('total-ui').innerText) || 0;
+                status.innerHTML = 'Payment confirmed. Saving transaction to database...';
+                status.style.color = 'var(--success)';
+                ui.gcashPaymentConfirmed = true;
+                ui.gcashPaymentAmount = total;
+                setTimeout(() => {
+                    ui.finalize('GCASH', total, 0, true);
+                }, 1000);
+        };
+        ui.editCashier = function() {
+                document.getElementById('cashier-display').style.display = 'none';
+                document.getElementById('cashier-edit').style.display = 'flex';
+                document.getElementById('cashier-input').value = user.cashier;
+                document.getElementById('cashier-input').focus();
+        };
+        ui.saveCashier = function() {
+                user.cashier = document.getElementById('cashier-input').value.trim();
+                document.getElementById('cashier-display').innerText = user.cashier || 'CASHIER NAME';
+                document.getElementById('cashier-display').style.display = 'block';
+                document.getElementById('cashier-edit').style.display = 'none';
+                window.logActivity('SET_CASHIER', { cashier: user.cashier });
+        };
+        ui.cancelCashier = function() {
+                document.getElementById('cashier-display').style.display = 'block';
+                document.getElementById('cashier-edit').style.display = 'none';
+        };
+        ui.closeModal = function() { 
+            document.getElementById('modal-layer').classList.add('hidden');
+            document.getElementById('pin-pad-modal').classList.add('hidden');
+        };
+        ui.saveIng = function(id) {
+                const name = document.getElementById('mi_name').value.trim();
+                const qty = parseFloat(document.getElementById('mi_qty').value);
+                const unit = document.getElementById('mi_unit').value;
+                const cat = document.getElementById('mi_cat').value;
+                const cost = parseFloat(document.getElementById('mi_cost').value) || 0;
+                const img = document.getElementById('mi_img')?.value.trim();
+                if (!name || isNaN(qty) || qty < 0 || !unit) {
+                    alert("Please fill all required fields with valid values");
+                    return;
+                }
+                const d = { name, qty, unit, category: cat, cost };
+                if (img) d.img = img;
+                else if (window.currentInventoryData?.img) d.img = window.currentInventoryData.img;
+                if (id) {
+                    const oldQty = state.inventory[id]?.qty || 0;
+                    const change = qty - oldQty;
+                    if (change !== 0) {
+                        const log = { ingredient: name, ingredientId: id, change, newQty: qty, costPerUnit: cost, costTotal: cost * change, timestamp: Date.now() };
+                        db.ref('stock_logs').push(log);
+                    }
+                    db.ref('inventory/' + id).update(d).then(() => {
+                        return db.ref('inventory/' + id + '/qty').once('value');
+                    }).then(snapshot => {
+                        const syncedQty = parseFloat(snapshot.val()) || 0;
+                        updateLocalInventoryQty(id, syncedQty);
+                        return ui.syncInventoryFromDatabase();
+                    }).finally(() => {
+                        window.logActivity('UPDATE_INGREDIENT', { ingredientId: id, name, qty, unit, category: cat, cost });
+                    });
+                } else {
+                    const ref = db.ref('inventory').push();
+                    ref.set(d).then(() => {
+                        const log = { ingredient: name, ingredientId: ref.key, change: qty, newQty: qty, costPerUnit: cost, costTotal: cost * qty, timestamp: Date.now() };
+                        return db.ref('stock_logs').push(log).then(() => ref.key);
+                    }).then(newId => {
+                        return ui.syncInventoryFromDatabase().then(() => newId);
+                    }).then(newId => {
+                        window.logActivity('CREATE_INGREDIENT', { ingredientId: newId, name, qty, unit, category: cat, cost });
+                    });
+                }
+                ui.closeModal();
+        };
+        ui.saveStock = function() {
+                const id = document.getElementById('stock-id').value;
+                const addQty = parseFloat(document.getElementById('stock-add-qty').value);
+                if (!id || isNaN(addQty) || addQty <= 0) {
+                    alert('Enter a valid quantity to add');
+                    return;
+                }
+                const item = state.inventory[id];
+                if (!item) {
+                    alert('Ingredient not found');
+                    return;
+                }
+                const stockRef = db.ref('inventory/' + id + '/qty');
+                stockRef.transaction(current => {
+                    return (parseFloat(current) || 0) + addQty;
+                }, (error, committed, snapshot) => {
+                    if (error) {
+                        console.error('Stock transaction failed:', error);
+                        alert('Unable to update stock. Please try again.');
+                        return;
+                    }
+                    if (!committed) {
+                        alert('Stock update was not committed. Please try again.');
+                        return;
+                    }
+                    const newQty = parseFloat(snapshot.val()) || 0;
+                    const log = { ingredient: item.name, ingredientId: id, change: addQty, newQty, costPerUnit: item.cost || 0, costTotal: (item.cost || 0) * addQty, timestamp: Date.now() };
+                    db.ref('stock_logs').push(log).then(() => {
+                        updateLocalInventoryQty(id, newQty);
+                        window.logActivity('ADD_STOCK', { ingredientId: id, name: item.name, addedQty: addQty, newQty });
+                        return db.ref('inventory/' + id + '/qty').once('value');
+                    }).then(snapshot => {
+                        const syncedQty = parseFloat(snapshot.val()) || 0;
+                        updateLocalInventoryQty(id, syncedQty);
+                        return ui.syncInventoryFromDatabase();
+                    }).finally(() => ui.closeModal());
+                });
+        };
+        ui.calculateCartUsage = function() {
+            const usage = {};
+            state.cart.forEach(item => {
+                const qty = item.qty || 1;
+                if (!item.recipe || !Array.isArray(item.recipe)) return;
+                item.recipe.forEach(r => {
+                    if (r && r.id && typeof r.amt === 'number') {
+                        usage[r.id] = (usage[r.id] || 0) + (r.amt * qty);
+                    }
+                });
+            });
+            return usage;
+        };
+        ui.verifyStockForCart = function() {
+            const usage = ui.calculateCartUsage();
+            return db.ref('inventory').once('value').then(snapshot => {
+                const inventory = snapshot.val() || {};
+                const missing = [];
+                Object.entries(usage).forEach(([id, needed]) => {
+                    const avail = getTimestamp(inventory[id]?.qty);
+                    if (avail < needed) {
+                        missing.push({ id, needed, avail, name: inventory[id]?.name || state.inventory[id]?.name || 'Unknown' });
+                    }
+                });
+                if (missing.length) return Promise.reject(missing);
+                return Promise.resolve(usage);
+            });
+        };
+        const runTransaction = (ref, updateFn) => new Promise((resolve, reject) => {
+            ref.transaction(updateFn, (error, committed, snapshot) => {
+                if (error) return reject(error);
+                if (!committed) return reject(new Error('Transaction not committed'));
+                resolve(snapshot.val());
+            });
+        });
+        ui.saveProduct = function(id) {
+                const name = document.getElementById('mp_name').value.trim();
+                const price = parseFloat(document.getElementById('mp_price').value);
+                const category = document.getElementById('mp_cat').value;
+                const subcategory = document.getElementById('mp_subcat') ? document.getElementById('mp_subcat').value : '';
+                const imgUrl = document.getElementById('mp_img').value.trim();
+                const imgFileInput = document.getElementById('mp_img_file');
+                let img = imgUrl || (window.currentProductData ? window.currentProductData.img : '');
+                if (!name || isNaN(price) || price < 0 || !category) {
+                    alert("Please fill all required fields with valid values");
+                    return;
+                }
+                const recipeMap = {};
+                if (window.currentProductData?.recipe && Array.isArray(window.currentProductData.recipe)) {
+                    window.currentProductData.recipe.forEach(r => {
+                        if (r && r.id) recipeMap[String(r.id)] = parseFloat(r.amt) || 0;
+                    });
+                }
+                document.querySelectorAll('.r-chk:checked').forEach(c => {
+                    const iid = String(c.dataset.id);
+                    const amt = parseFloat(document.querySelector(`.r-qty[data-id="${iid}"]`).value);
+                    if (amt > 0) recipeMap[iid] = amt;
+                    else delete recipeMap[iid];
+                });
+                const rec = Object.entries(recipeMap).map(([id, amt]) => ({ id, amt }));
+                const saveProductData = (imageValue) => {
+                    const d = { name, price, category, img: imageValue };
+                    if (category === 'sides') {
+                        d.subcategory = subcategory || 'general';
+                    } else {
+                        d.subcategory = '';
+                    }
+                    if (id) {
+                        db.ref('products/' + id).update(d);
+                        db.ref('products/' + id + '/recipe').set(rec);
+                    } else {
+                        const ref = db.ref('products').push();
+                        ref.set({ ...d, recipe: rec });
+                    }
+                    ui.closeModal();
+                };
+                if (imgFileInput && imgFileInput.files && imgFileInput.files[0]) {
+                    const file = imgFileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        saveProductData(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    saveProductData(img);
+                }
+        };
+        ui.saveMod = function(id) {
+                const name = document.getElementById('m_name').value.trim();
+                const price = parseFloat(document.getElementById('m_price').value) || 0;
+                const type = document.getElementById('m_type').value;
+                if (!name || !type) {
+                    alert("Please fill all required fields");
+                    return;
+                }
+                const recipeMap = {};
+                if (window.currentModData?.recipe && Array.isArray(window.currentModData.recipe)) {
+                    window.currentModData.recipe.forEach(r => {
+                        if (r && r.id) recipeMap[String(r.id)] = parseFloat(r.amt) || 0;
+                    });
+                }
+                document.querySelectorAll('.m-chk:checked').forEach(c => {
+                    const iid = String(c.dataset.id);
+                    const amt = parseFloat(document.querySelector(`.m-qty[data-id="${iid}"]`).value);
+                    if (amt > 0) recipeMap[iid] = amt;
+                    else delete recipeMap[iid];
+                });
+                const rec = Object.entries(recipeMap).map(([id, amt]) => ({ id, amt }));
+                const d = { name, price, type };
+                if (id) {
+                    db.ref('modifiers/' + id).update(d);
+                    db.ref('modifiers/' + id + '/recipe').set(rec);
+                    window.logActivity('UPDATE_MODIFIER', { modifierId: id, name, price, type });
+                } else {
+                    const ref = db.ref('modifiers').push();
+                    ref.set({ ...d, recipe: rec });
+                    window.logActivity('CREATE_MODIFIER', { modifierId: ref.key, name, price, type });
+                }
+                ui.closeModal();
+        };
+        ui.commitOrderFromData = function(id) {
+                const data = state.products[id];
+                if (!data) return;
+                const modMap = {};
+                const modRecipes = [];
+                let b1t1Applied = false;
+                const addMod = (m, id) => {
+                    if (!m) return;
+                    const modId = id || m.id;
+                    if (!modId) return;
+                    if (!modMap[modId]) {
+                        modMap[modId] = { id: modId, name: m.name, price: parseFloat(m.price) || 0 };
+                        if (m.recipe && Array.isArray(m.recipe)) modRecipes.push(...m.recipe);
+                    }
+                };
+                // Process Multi-selection Add-ons
+                document.querySelectorAll('.sel-mod:checked').forEach(c => addMod(state.modifiers[c.dataset.id], c.dataset.id));
+                // Process B1T1 Promo Radio Button
+                const b1t1Radio = document.querySelector('.sel-b1t1:checked');
+                if (b1t1Radio) {
+                    const b1t1Mod = state.modifiers[b1t1Radio.dataset.id];
+                    if (b1t1Mod) {
+                        addMod(b1t1Mod, b1t1Radio.dataset.id);
+                        b1t1Applied = true;
+                    }
+                }
+                // Process Free Flavor Dropdown
+                const f = document.getElementById('s-flav');
+                if (f && f.value) addMod(state.modifiers[f.value]);
+                // Process Paid Size Dropdown
+                const s = document.getElementById('s-size');
+                if (s && s.value) addMod(state.modifiers[s.value]);
+
+                const mods = Object.values(modMap);
+                const itemRecipe = data.recipe || [];
+                const fullRecipe = itemRecipe.concat(modRecipes);
+                
+                // Check stock availability
+                for (const r of fullRecipe) {
+                    if (r && r.id && typeof r.amt === 'number') {
+                        const inv = state.inventory[r.id];
+                        if (!inv || inv.qty < r.amt) {
+                            alert(`Insufficient stock for ${inv ? inv.name : 'unknown ingredient'}. Required: ${r.amt}, Available: ${inv ? inv.qty : 0}`);
+                            return;
+                        }
+                    }
+                }
+                
+                const modPrice = mods.reduce((sum, m) => sum + (parseFloat(m.price) || 0), 0);
+                const modNames = mods.length ? mods.map(m => m.name).join(', ') : '';
+                pos.addToCart({ id, name: data.name, price: parseFloat(data.price) || 0, mods, modPrice, modNames, recipe: fullRecipe, b1t1: b1t1Applied });
+                ui.closeModal();
+        };
+        ui.createAdminAccount = function() {
+                if (!db) return alert('Firebase not loaded. Check internet connection.');
+                const rawEmail = document.getElementById('signup-email').value.trim().toLowerCase();
+                const emailKey = rawEmail.replace(/\./g, '_');
+                const pass = document.getElementById('signup-pass').value;
+                const pin = document.getElementById('signup-pin').value;
+                if (!rawEmail || !pass || pin.length !== 4) {
+                    alert("ALL FIELDS REQUIRED. PIN MUST BE 4 DIGITS.");
+                    return;
+                }
+                db.ref('admins/' + emailKey).set({ email: rawEmail, pass, pin, createdAt: Date.now() });
+                ui.closeModal();
+                alert("ADMIN ACCOUNT CREATED");
+        };
+        ui.finalize = function(method, paid = 0, change = 0, isGcashPayment = false) {
+                const total = parseCurrency(document.getElementById('total-ui').innerText);
+                if (isNaN(total) || total <= 0) {
+                    alert("Invalid total amount");
+                    return;
+                }
+                ui.verifyStockForCart().then(usage => {
+                    const transactionPromises = Object.entries(usage).map(([id, needed]) => {
+                        const ref = db.ref('inventory/' + id + '/qty');
+                        return runTransaction(ref, current => {
+                            const currentQty = getTimestamp(current);
+                            if (currentQty < needed) return;
+                            return currentQty - needed;
+                        }).then(newQty => {
+                            const qtyValue = getTimestamp(newQty);
+                            const itemName = state.inventory[id]?.name || 'Unknown';
+                            updateLocalInventoryQty(id, qtyValue);
+                            return db.ref('stock_logs').push({
+                                ingredient: itemName,
+                                ingredientId: id,
+                                change: -needed,
+                                newQty: qtyValue,
+                                costPerUnit: state.inventory[id]?.cost || 0,
+                                costTotal: (state.inventory[id]?.cost || 0) * needed,
+                                timestamp: Date.now(),
+                                note: 'Used in order'
+                            });
+                        });
+                    });
+                    return Promise.all(transactionPromises).then(() => {
+                        ui.printReceipt(total, paid, method, change);
+                        const order = { items: state.cart, total, method, timestamp: Date.now(), orderType: ui.orderType, paid, change, cashier: user.cashier };
+                        const orderRef = db.ref('orders').push();
+                        orderRef.set(order);
+                        if (method === 'GCASH' && isGcashPayment) {
+                            db.ref('payments').push({ cashier: user.cashier, amount: paid, method: 'GCASH', status: 'paid', timestamp: Date.now(), orderId: orderRef.key });
+                            window.logActivity('GCASH_PAYMENT_CONFIRMED', { orderId: orderRef.key, amount: paid });
+                        }
+                        window.logActivity('ORDER_FINALIZED', { orderId: orderRef.key, total, method, paid, change, orderType: ui.orderType });
+                        state.cart = [];
+                        pos.updateCart();
+                        return ui.syncInventoryFromDatabase();
+                    }).then(() => {
+                        ui.closeModal();
+                        alert("TRANSACTION COMPLETE");
+                    });
+                }).catch(missing => {
+                    if (Array.isArray(missing)) {
+                        const details = missing.map(m => `${m.name}: ${m.avail}/${m.needed}`).join(', ');
+                        alert(`Insufficient stock for order. Please update stock before continuing. (${details})`);
+                    } else {
+                        console.error('Finalize error:', missing);
+                        alert('Unable to complete transaction. Please try again.');
+                    }
+                });
+        };
+        ui.printReport = function(elementId) {
+                const source = document.getElementById(elementId);
+                const printArea = document.getElementById('printable-area');
+                if (!source || !printArea) return alert('Unable to print report.');
+                printArea.classList.remove('hidden');
+                printArea.style.display = 'block';
+                printArea.innerHTML = `<div style="padding:20px; background:#fff; color:#000;">${source.innerHTML}</div>`;
+                window.print();
+                setTimeout(() => {
+                    printArea.style.display = 'none';
+                    printArea.classList.add('hidden');
+                }, 500);
+        };
+        ui.printReceipt = function(total, paid, method, change = 0) {
+                const receipt = `
+                    <div class="receipt-paper" style="font-family:'Courier New', Courier, monospace; color:#111; padding:14px; width:72mm; max-width:72mm; margin:0 auto;">
+                        <h2 style="margin:0; font-size:18px; letter-spacing:2px; text-align:center;">BURGERLICIOUS</h2>
+                        <p style="margin:6px 0 2px; font-size:9px; text-align:center;">BUCANA, NASUGBU, BATANGAS</p>
+                        <p style="margin:2px 0 10px; font-size:9px; text-align:center;">${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</p>
+                        <p style="margin:2px 0; font-size:10px; text-transform:uppercase; letter-spacing:1px; text-align:center;">ORDER RECEIPT</p>
+                        <hr style="margin:10px 0; border:none; border-top:1px dashed #000;" />
+                        ${state.cart.map(i => {
+                            const qty = getItemQty(i);
+                            const basePrice = parseFloat(i.price) || 0;
+                            const itemModPrice = getItemModPrice(i);
+                            const lineTotal = getItemLineTotal(i);
+                            return `<div style="text-align:left; margin:4px 0; font-size:10px; line-height:1.3;">
+                                <div><strong>${safeText(i.name)}</strong>${i.b1t1 ? ' [B1T1]' : ''}${qty > 1 ? ` x${qty}` : ''}</div>
+                                <div style="color:#555;">₱${basePrice.toFixed(2)}${itemModPrice > 0 ? ` + ₱${itemModPrice.toFixed(2)} = ₱${lineTotal.toFixed(2)}` : ''}</div>
+                                ${i.mods && i.mods.length ? `<div style="margin-top:2px; color:#777; font-size:9px;">Add-ons:<br>${i.mods.map(m => `- ${safeText(m.name)} +₱${(parseFloat(m.price)||0).toFixed(2)}`).join('<br>')}</div>` : ''}
+                            </div>`;
+                        }).join('')}
+                        <hr style="margin:8px 0;" />
+                        <div style="text-align:left; font-size:11px; line-height:1.4;"><strong>TOTAL:</strong><span style="float:right;">₱${total.toFixed(2)}</span></div>
+                        ${paid > 0 ? `<div style="text-align:left; font-size:10px; line-height:1.4;"><strong>PAID:</strong><span style="float:right;">₱${paid.toFixed(2)}</span></div>` : ''}
+                        ${change > 0 ? `<div style="text-align:left; font-size:10px; line-height:1.4;"><strong>CHANGE:</strong><span style="float:right;">₱${change.toFixed(2)}</span></div>` : ''}
+                        <div style="text-align:left; font-size:10px; line-height:1.4;"><strong>METHOD:</strong><span style="float:right;">${method}</span></div>
+                        <br />
+                        <p style="font-size:9px; margin:8px 0 0;">Have a Burgerlicious day! Hope you enjoyed and see you again!</p>
+                    </div>
+                `;
+                const printArea = document.getElementById('printable-area');
+                printArea.classList.remove('hidden');
+                printArea.style.display = 'block';
+                printArea.innerHTML = receipt;
+                window.print();
+                setTimeout(() => {
+                    printArea.style.display = 'none';
+                    printArea.classList.add('hidden');
+                }, 500);
+        };
+
+        admin.tab = 'dash';
+        admin.invFilter = 'all';
+        admin.menuFilter = 'all';
+        admin.modFilter = 'all';
+        admin.nav = function(page, btn) {
+            admin.tab = page;
+            document.querySelectorAll('.admin-nav .btn-glam').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            admin.render();
+        };
+        admin.requestAccess = function() {
+            if (!user.admin) return alert("PLEASE LOGIN FIRST");
+            document.getElementById('pin-pad-modal').classList.remove('hidden');
+            admin.pinSequence = '';
+            admin.updatePinDisplay();
+        };
+        admin.close = function() {
+            const panel = document.getElementById('admin-panel');
+            if (panel) panel.style.display = 'none';
+            const pinModal = document.getElementById('pin-pad-modal');
+            if (pinModal) pinModal.classList.add('hidden');
+        };
+        admin.pinSequence = '';
+        admin.pinPress = function(digit) {
+            if (admin.pinSequence.length < 4) {
+                admin.pinSequence += digit;
+                admin.updatePinDisplay();
+                if (admin.pinSequence.length === 4) {
+                    setTimeout(() => {
+                        if (!user.admin.pin || admin.pinSequence !== user.admin.pin) {
+                            alert("INVALID ADMIN PIN");
+                            admin.pinSequence = '';
+                            admin.updatePinDisplay();
+                        } else {
+                            document.getElementById('pin-pad-modal').classList.add('hidden');
+                            document.getElementById('admin-panel').style.display = 'grid';
+                            admin.nav('dash');
+                        }
+                    }, 300);
+                }
+            }
+        };
+        admin.pinClear = function() {
+            admin.pinSequence = '';
+            admin.updatePinDisplay();
+        };
+        admin.updatePinDisplay = function() {
+            for(let i = 0; i < 4; i++) {
+                const dot = document.getElementById('pin-dot-' + i);
+                if(!dot) continue;
+                if(admin.pinSequence[i]) {
+                    dot.innerText = '●';
+                    dot.style.color = '#00ffa3';
+                    dot.style.borderColor = '#00ffa3';
+                    dot.style.boxShadow = '0 0 20px rgba(0, 255, 163, 0.5)';
+                } else {
+                    dot.innerText = '●';
+                    dot.style.color = 'var(--text-dim)';
+                    dot.style.borderColor = 'var(--border)';
+                    dot.style.boxShadow = 'none';
+                }
+            }
+        };
+        admin.setInvFilter = function(f, b) { admin.invFilter = f; document.querySelectorAll('.admin-body .btn-glam').forEach(btn => btn.classList.remove('active')); if(b) b.classList.add('active'); admin.render(); };
+        admin.setMenuFilter = function(f, b) { admin.menuFilter = f; document.querySelectorAll('.admin-body .btn-glam').forEach(btn => btn.classList.remove('active')); if(b) b.classList.add('active'); admin.render(); };
+        admin.setModFilter = function(f, b) { admin.modFilter = f; document.querySelectorAll('.admin-body .btn-glam').forEach(btn => btn.classList.remove('active')); if(b) b.classList.add('active'); admin.render(); };
+        admin.calculateUsage = function() {
+            const usage = {};
+            Object.values(state.orders).forEach(o => {
+                (o.items || []).forEach(item => {
+                    if (item.recipe && Array.isArray(item.recipe)) {
+                        item.recipe.forEach(r => {
+                            if (r && r.id && typeof r.amt === 'number') {
+                                usage[r.id] = (usage[r.id] || 0) + r.amt;
+                            }
+                        });
+                    }
+                });
+            });
+            const totalUsedAmount = Object.values(usage).reduce((sum, amt) => sum + amt, 0);
+            const totalUsedCost = Object.entries(usage).reduce((sum, [id, amt]) => sum + ((state.inventory[id]?.cost || 0) * amt), 0);
+            return { usage, totalUsedAmount, totalUsedCost };
+        };
+        admin.loadChart = function() {
+            const chartCanvas = document.getElementById('salesChart');
+            if (!chartCanvas) return;
+            if (window.salesChartInstance) {
+                try { window.salesChartInstance.destroy(); } catch (err) { console.warn('Error destroying previous chart', err); }
+                window.salesChartInstance = null;
+            }
+            const ctx = chartCanvas.getContext('2d');
+            const orders = Object.values(state.orders);
+            const today = new Date();
+            const dayLabels = [];
+            const dayData = [];
+            for(let i = 6; i >= 0; i--) {
+                const day = new Date(today);
+                day.setDate(today.getDate() - i);
+                const label = day.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayKey = day.toLocaleDateString('en-CA');
+                const total = orders.filter(o => getLocalDate(o.timestamp) === dayKey)
+                    .reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+                dayLabels.push(label);
+                dayData.push(total.toFixed(2));
+            }
+            window.salesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dayLabels,
+                    datasets: [{
+                        label: 'Sales',
+                        data: dayData,
+                        borderColor: 'var(--primary)',
+                        backgroundColor: 'rgba(255, 140, 0, 0.25)',
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'var(--primary)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            ticks: { color: '#fff' },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        },
+                        x: {
+                            ticks: { color: '#fff' },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
+                    }
+                }
+            });
+        };
+        admin.filterSales = function(days) {
+            admin.nav('sales');
+        };
+        admin.del = function(type, id) {
+            if (!type || !id) return;
+            if (confirm('Delete this item?')) {
+                window.logActivity('DELETE_ITEM', { type, id });
+                db.ref(type + '/' + id).remove()
+                    .then(() => {
+                        if (type === 'inventory' || type === 'products' || type === 'modifiers') {
+                            ui.syncInventoryFromDatabase().catch(err => console.error('Sync failed after delete:', err));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to delete item:', error);
+                        alert('Unable to delete item from database. Please try again.');
+                    });
+            }
+        };
+        admin.deleteSale = function(id) {
+            if (!id || !state.orders[id]) return;
+            if (!confirm('Delete this sale record and restore ingredients to inventory?')) return;
+            const order = state.orders[id];
+            (order.items || []).forEach(item => {
+                const qty = parseInt(item.qty, 10) || 1;
+                if (!Array.isArray(item.recipe)) return;
+                item.recipe.forEach(r => {
+                    if (!r || !r.id) return;
+                    const restoreAmount = (parseFloat(r.amt) || 0) * qty;
+                    if (restoreAmount <= 0) return;
+                    db.ref('inventory/' + r.id + '/qty').transaction(current => {
+                        return (parseFloat(current) || 0) + restoreAmount;
+                    });
+                    const ingredientName = state.inventory[r.id]?.name || ('Ingredient ' + r.id);
+                    db.ref('stock_logs').push({
+                        ingredient: ingredientName,
+                        ingredientId: r.id,
+                        change: restoreAmount,
+                        newQty: (parseFloat(state.inventory[r.id]?.qty) || 0) + restoreAmount,
+                        costPerUnit: parseFloat(state.inventory[r.id]?.cost) || 0,
+                        costTotal: ((parseFloat(state.inventory[r.id]?.cost) || 0) * restoreAmount),
+                        timestamp: Date.now(),
+                        note: 'Restored from deleted sale ' + id
+                    });
+                });
+            });
+            window.logActivity('DELETE_SALE', { orderId: id, cashier: order.cashier, total: order.total });
+            db.ref('orders/' + id).remove();
+        };
+        admin.render = function() {
+                const root = document.getElementById('admin-root'); if(!root) return; root.innerHTML = '';
+                const orders = Object.values(state.orders);
+                const now = new Date();
+
+                if(admin.tab === 'dash') {
+                    const isToday = (d) => getLocalDate(d) === getLocalDate(Date.now());
+
+                    const calcTotal = (o) => o.items.reduce((sum, i) => {
+                        const price = parseFloat(i.price) || 0;
+                        const modPrice = i.mods ? i.mods.reduce((ms, m) => ms + (parseFloat(m.price) || 0), 0) : (parseFloat(i.modPrice) || 0);
+                        const qty = parseInt(i.qty, 10) || 1;
+                        return sum + ((price + modPrice) * qty);
+                    }, 0);
+
+                    const shift = ui.getLatestShiftToday();
+                    const today = getLocalDate(Date.now());
+                    const dailyOrders = shift && shift.date === today
+                        ? orders.filter(o => getTimestamp(o.timestamp) >= getTimestamp(shift.startTime) && (!shift.endTime || getTimestamp(o.timestamp) <= getTimestamp(shift.endTime)))
+                        : orders.filter(o => isTodayLocal(o.timestamp));
+
+                    const weeklyOrders = orders.filter(o => (Date.now() - getTimestamp(o.timestamp)) < (7 * 86400000));
+                    const daily = dailyOrders.reduce((sum, o) => sum + calcTotal(o), 0);
+                    const dailyBuyers = dailyOrders.length;
+                    const dailyIngredientCost = dailyOrders.reduce((sum, o) => sum + ui.calculateIngredientCostForOrder(o), 0);
+                    const dailyNetIncome = daily - dailyIngredientCost;
+
+                    const itemCounts = {};
+                    weeklyOrders.forEach(o => o.items.forEach(i => itemCounts[i.name] = (itemCounts[i.name] || 0) + i.qty));
+                    const topSellers = Object.entries(itemCounts).sort((a,b) => b[1] - a[1]).slice(0,3);
+
+                    root.innerHTML = `<button class="btn-glam" onclick="document.getElementById('admin-panel').style.display = 'none';">BACK TO POS</button><br /><br />
+                        <h1 style="margin-bottom:40px;">Daily Dashboard</h1>
+                        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:30px; margin-bottom:30px;">
+                            <div class="cart-total-box" style="text-align:center;"><span>DAILY REVENUE</span><h1 style="color:var(--success); font-size:2.5rem;">₱${daily.toLocaleString()}</h1></div>
+                            <div class="cart-total-box" style="text-align:center;"><span>INGREDIENT COST USED</span><h1 style="color:#ffa500; font-size:2.5rem;">₱${dailyIngredientCost.toLocaleString()}</h1></div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:30px; margin-bottom:50px;">
+                            <div class="cart-total-box" style="text-align:center;"><span>DAILY BUYERS</span><h1 style="color:var(--warning); font-size:2.5rem;">${dailyBuyers}</h1></div>
+                            <div class="cart-total-box" style="text-align:center;"><span>NET INCOME TODAY</span><h1 style="color:var(--primary); font-size:2.5rem;">₱${dailyNetIncome.toLocaleString()}</h1></div>
+                        </div>
+                        <div style="background:var(--card); padding:30px; border-radius:30px; border:1px solid var(--border); margin-bottom:30px;">
+                            <h2 style="margin-bottom:20px;">TOP 3 BEST SELLERS</h2>
+                            <div style="display:flex; gap:20px; justify-content:center;">
+                                ${topSellers.map(([name, count], i) => `<div style="text-align:center;"><h3>${i+1}. ${name}</h3><p style="color:var(--primary); font-size:1.5rem;">${count} sold</p></div>`).join('')}
+                            </div>
+                        </div>
+                        <div style="background:var(--card); padding:45px; border-radius:45px; border:1px solid var(--border);"><canvas id="salesChart" height="120"></canvas></div>`;
+                    setTimeout(admin.loadChart, 100);
+                }
+                else if(admin.tab === 'inv') {
+                    const filteredInv = Object.entries(state.inventory).filter(([id, i]) => admin.invFilter === 'all' || (i.category || 'other').toLowerCase() === admin.invFilter);
+                    const invGroups = {};
+                    filteredInv.forEach(([id, i]) => {
+                        const cat = (i.category || 'other').toLowerCase();
+                        if (!invGroups[cat]) invGroups[cat] = [];
+                        invGroups[cat].push([id, i]);
+                    });
+                    const totalCost = filteredInv.reduce((sum, [id, i]) => sum + ((i.cost || 0) * i.qty), 0);
+                    const totalIngredients = filteredInv.length;
+                    const totalStockQty = filteredInv.reduce((sum, [id, i]) => sum + (parseFloat(i.qty) || 0), 0);
+                    const lowStockItems = filteredInv.filter(([id, i]) => (parseFloat(i.qty) || 0) < 10);
+                    const lowStockAlert = lowStockItems.length ? `<div style="margin-bottom:20px; padding:18px; border-radius:22px; background:rgba(255,97,84,0.12); border:1px solid rgba(255,97,84,0.35); color:#ffb3a7;"><strong>LOW STOCK ALERT:</strong> ${lowStockItems.length} ingredient${lowStockItems.length === 1 ? '' : 's'} below 10 qty.</div>` : '';
+                    const usageStats = admin.calculateUsage();
+                    const today = getLocalDate(Date.now());
+                    const dailyStockAdds = Object.values(state.stock_logs || {}).filter(log => getLocalDate(log.timestamp) === today && log.change > 0);
+                    const totalStockAdded = dailyStockAdds.reduce((sum, log) => sum + (log.change || 0), 0);
+                    const totalStockAddCost = dailyStockAdds.reduce((sum, log) => sum + (parseFloat(log.costTotal) || 0), 0);
+                    const activeShift = ui.getActiveShift();
+                    const shiftInfo = activeShift ? `Open shift started at ${new Date(activeShift.startTime).toLocaleTimeString()}` : 'No open shift';
+                    const groupedHtml = Object.keys(invGroups).sort().map(cat => {
+                        return `<div style="margin-top:30px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:8px 18px; border-radius:12px; font-weight:900; margin-bottom:18px;">${cat.toUpperCase()}</div><table class="titan-table"><thead><tr><th>NAME</th><th>CATEGORY</th><th>QTY</th><th>UNIT</th><th>COST/UNIT</th><th>TOTAL COST</th><th>ACTION</th></tr></thead><tbody>${invGroups[cat].map(([id, i]) => {
+                            const lowStock = (parseFloat(i.qty) || 0) < 10;
+                            const rowStyle = lowStock ? ' style="background: rgba(255,97,84,0.1);"' : '';
+                            const badge = lowStock ? '<span class="low-stock-badge">LOW STOCK</span>' : '';
+                            return `<tr${rowStyle}><td><b style="font-size:0.9rem;">${safeText(i.name)}</b></td><td>${safeText(i.category || 'other')}</td><td>${i.qty}${badge}</td><td>${safeText(i.unit || '-')}</td><td>₱${(i.cost || 0).toFixed(2)}</td><td>₱${((i.cost || 0) * i.qty).toFixed(2)}</td><td><button class="btn-glam" style="padding:3px 6px; font-size:0.7rem;" onclick="ui.openModal('ADD_STOCK', {id:'${id}', name:'${safeText(i.name)}', qty:${i.qty}})">ADD</button> <button class="btn-glam" style="padding:3px 6px; font-size:0.7rem;" onclick="ui.openModal('EDIT_ING', {id:'${id}', ...state.inventory['${id}']})">EDIT</button> <button class="btn-glam btn-danger" style="padding:3px 6px; font-size:0.7rem;" onclick="admin.del('inventory','${id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+                        }).join('')}</tbody></table></div>`;
+                    }).join('');
+                    root.innerHTML = `<button class="btn-glam" onclick="document.getElementById('admin-panel').style.display = 'none';">BACK TO POS</button><br /><br />
+                        <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
+                            <button class="btn-glam ${admin.invFilter === 'all' ? 'active' : ''}" onclick="admin.setInvFilter('all', this)">ALL</button>
+                            <button class="btn-glam ${admin.invFilter === 'burger' ? 'active' : ''}" onclick="admin.setInvFilter('burger', this)">BURGER</button>
+                            <button class="btn-glam ${admin.invFilter === 'drinks' ? 'active' : ''}" onclick="admin.setInvFilter('drinks', this)">DRINKS</button>
+                            <button class="btn-glam ${admin.invFilter === 'sides' ? 'active' : ''}" onclick="admin.setInvFilter('sides', this)">SIDES</button>
+                        </div>
+                        ${lowStockAlert}
+                        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:center;">
+                            <button class="btn-glam active" onclick="ui.openModal('ADD_ING')">+ ADD NEW INGREDIENT</button>
+                            <button class="btn-glam" onclick="ui.syncInventoryFromDatabase()">SYNC INVENTORY</button>
+                        </div>
+                        <div style="margin-bottom:20px; padding:20px; border-radius:20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text);"><strong>Shift status:</strong> ${safeText(shiftInfo)}</div>
+                        <div style="margin-bottom:20px; font-size:1.1rem; font-weight:700;">STOCK INGREDIENTS</div>
+                        ${groupedHtml}
+                        <div style="text-align:right; margin-top:20px; font-size:1.5rem; font-weight:bold; color:var(--primary);">TOTAL INVENTORY COST: ₱${totalCost.toFixed(2)}</div>`;
+                }
+                else if(admin.tab === 'menu') {
+                    const filteredProducts = Object.entries(state.products).filter(([id, p]) => admin.menuFilter === 'all' || (p.category || 'other').toLowerCase() === admin.menuFilter);
+                    const productGroups = {};
+                    filteredProducts.forEach(([id, p]) => {
+                        const cat = (p.category || 'other').toLowerCase();
+                        if (!productGroups[cat]) productGroups[cat] = [];
+                        productGroups[cat].push([id, p]);
+                    });
+                    const categoryOrder = ['burgers','budget','combo','sides','drinks','b1t1','other'];
+                    let html = `<button class="btn-glam" onclick="document.getElementById('admin-panel').style.display = 'none';">BACK TO POS</button><br /><br />
+                        <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
+                            <button class="btn-glam ${admin.menuFilter === 'all' ? 'active' : ''}" onclick="admin.setMenuFilter('all', this)">ALL ITEMS</button>
+                            <button class="btn-glam ${admin.menuFilter === 'burgers' ? 'active' : ''}" onclick="admin.setMenuFilter('burgers', this)">BURGER</button>
+                            <button class="btn-glam ${admin.menuFilter === 'budget' ? 'active' : ''}" onclick="admin.setMenuFilter('budget', this)">BUDGET MEAL</button>
+                            <button class="btn-glam ${admin.menuFilter === 'combo' ? 'active' : ''}" onclick="admin.setMenuFilter('combo', this)">COMBO MEAL</button>
+                            <button class="btn-glam ${admin.menuFilter === 'sides' ? 'active' : ''}" onclick="admin.setMenuFilter('sides', this)">SIDES</button>
+                            <button class="btn-glam ${admin.menuFilter === 'drinks' ? 'active' : ''}" onclick="admin.setMenuFilter('drinks', this)">DRINKS</button>
+                            <button class="btn-glam ${admin.menuFilter === 'b1t1' ? 'active' : ''}" onclick="admin.setMenuFilter('b1t1', this)">BUY 1 TAKE 1</button>
+                        </div>
+                        <button class="btn-glam active" onclick="ui.openModal('ADD_ITEM')">ADD NEW PRODUCT</button><br /><br />`;
+                    categoryOrder.forEach(cat => {
+                        const items = productGroups[cat] || [];
+                        if(items.length) {
+                            if (cat === 'sides') {
+                                const sideGroups = items.reduce((acc, [id, p]) => {
+                                    const sub = (p.subcategory || 'General Sides').toLowerCase();
+                                    if (!acc[sub]) acc[sub] = [];
+                                    acc[sub].push([id, p]);
+                                    return acc;
+                                }, {});
+                                html += `<div style="margin-bottom:25px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:8px 18px; border-radius:12px; font-weight:900; margin-bottom:18px;">SIDES / SNACKS</div>`;
+                                Object.keys(sideGroups).sort().forEach(sub => {
+                                    const label = sub === 'general sides' ? 'General Sides' : sub.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                                    html += `<div style="margin-bottom:18px; padding:12px; border:1px solid rgba(255,255,255,0.08); border-radius:18px; background:rgba(255,255,255,0.03);"><div style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-bottom:12px;">${label}</div>`;
+                                    sideGroups[sub].forEach(([id, p]) => {
+                                        html += `<div class="menu-list-row"><div style="display:flex; align-items:center; gap:12px;"><img src="${p.img || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'" style="width:45px; height:45px; border-radius:10px; object-fit:cover;" /><div><b>${p.name}</b><br /><small style="color:var(--text-dim);">₱${p.price.toFixed(2)}</small></div></div><div><button class="btn-glam" onclick="ui.openModal('EDIT_ITEM', {id:'${id}', ...state.products['${id}']})">EDIT</button><button class="btn-danger" onclick="if(confirm('Delete ${safeText(p.name)}?')) db.ref('products/${id}').remove()">DELETE</button></div></div>`;
+                                    });
+                                    html += `</div>`;
+                                });
+                                html += `</div>`;
+                            } else {
+                                html += `<div style="margin-bottom:25px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:8px 18px; border-radius:12px; font-weight:900; margin-bottom:18px;">${cat.toUpperCase()}</div>`;
+                                items.forEach(([id, p]) => {
+                                    html += `<div class="menu-list-row"><div style="display:flex; align-items:center; gap:12px;"><img src="${p.img || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'" style="width:45px; height:45px; border-radius:10px; object-fit:cover;" /><div><b>${p.name}</b><br /><small style="color:var(--text-dim);">₱${p.price.toFixed(2)}</small></div></div><div><button class="btn-glam" onclick="ui.openModal('EDIT_ITEM', {id:'${id}', ...state.products['${id}']})">EDIT</button><button class="btn-danger" onclick="if(confirm('Delete ${safeText(p.name)}?')) db.ref('products/${id}').remove()">DELETE</button></div></div>`;
+                                });
+                                html += `</div>`;
+                            }
+                        }
+                    });
+                    root.innerHTML = html;
+                }
+                else if(admin.tab === 'mod') {
+                    const filteredMods = Object.entries(state.modifiers).filter(([id, m]) => admin.modFilter === 'all' || m.type === admin.modFilter);
+                    const modGroups = {};
+                    filteredMods.forEach(([id, m]) => {
+                        const type = m.type || 'other';
+                        if (!modGroups[type]) modGroups[type] = [];
+                        modGroups[type].push([id, m]);
+                    });
+                    const typeOrder = ['addon', 'sides_addon', 'drink_type', 'drink_size', 'other'];
+                    let html = `<button class="btn-glam" onclick="document.getElementById('admin-panel').style.display = 'none';">BACK TO POS</button><br /><br />
+                        <div style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto;">
+                            <button class="btn-glam ${admin.modFilter === 'all' ? 'active' : ''}" onclick="admin.setModFilter('all', this)">ALL MODIFIERS</button>
+                            <button class="btn-glam ${admin.modFilter === 'addon' ? 'active' : ''}" onclick="admin.setModFilter('addon', this)">ADDS ON (BURGERS)</button>
+                            <button class="btn-glam ${admin.modFilter === 'sides_addon' ? 'active' : ''}" onclick="admin.setModFilter('sides_addon', this)">ADDS ON (SIDES)</button>
+                            <button class="btn-glam ${admin.modFilter === 'drink_type' ? 'active' : ''}" onclick="admin.setModFilter('drink_type', this)">DRINKS (TYPES)</button>
+                            <button class="btn-glam ${admin.modFilter === 'drink_size' ? 'active' : ''}" onclick="admin.setModFilter('drink_size', this)">DRINKS/SIDES SIZE</button>
+                        </div>
+                        <button class="btn-glam active" onclick="ui.openModal('ADD_MOD')">CREATE MODIFIER</button><br /><br />`;
+                    typeOrder.forEach(type => {
+                        const mods = modGroups[type] || [];
+                        if(mods.length) {
+                            const typeLabel = type === 'addon' ? 'ADDS ON (BURGERS)' : type === 'sides_addon' ? 'ADDS ON (SIDES)' : type === 'drink_type' ? 'DRINKS (TYPES)' : type === 'drink_size' ? 'DRINKS/SIDES SIZE' : type.toUpperCase();
+                            html += `<div style="margin-bottom:25px;"><div style="display:inline-block; background:var(--primary); color:#000; padding:8px 18px; border-radius:12px; font-weight:900; margin-bottom:18px;">${typeLabel}</div><table class="titan-table"><thead><tr><th>NAME</th><th>TYPE</th><th>FEE</th><th>EDIT</th><th>DELETE</th></tr></thead><tbody>${mods.map(([id, m]) => `<tr><td>${m.name}</td><td>${m.type}</td><td>₱${m.price}</td><td><button class="btn-glam" onclick="ui.openModal('EDIT_MOD', {id:'${id}', ...state.modifiers['${id}']})">EDIT</button></td><td><button class="btn-danger" onclick="if(confirm('Delete ${safeText(m.name)}?')) db.ref('modifiers/${id}').remove()">DELETE</button></td></tr>`).join('')}</tbody></table></div>`;
+                        }
+                    });
+                    root.innerHTML = html;
+                }
+                else if(admin.tab === 'sales') {
+                    const orders = Object.entries(state.orders || {}).sort((a,b) => new Date(b[1].timestamp) - new Date(a[1].timestamp));
+                    const today = getLocalDate(Date.now());
+                    const shift = ui.getLatestShiftToday();
+                    const dailyOrders = shift && shift.date === today
+                        ? orders.filter(([id, o]) => getTimestamp(o.timestamp) >= getTimestamp(shift.startTime) && (!shift.endTime || getTimestamp(o.timestamp) <= getTimestamp(shift.endTime)))
+                        : orders.filter(([id, o]) => isTodayLocal(o.timestamp));
+                    const sum = rows => rows.reduce((acc, [id, o]) => acc + (parseFloat(o.total) || 0), 0);
+                    const orderRows = dailyOrders.map(([id, o]) => {
+                        const orderText = (o.items || []).map(i => safeText(i.name) + (i.modNames ? ' (' + safeText(i.modNames) + ')' : '')).join(' | ');
+                        return '<tr><td>' + new Date(o.timestamp).toLocaleString() + '</td><td>' + safeText(o.cashier || 'Unknown') + '</td><td style="max-width:420px;">' + (orderText || 'No items') + '</td><td>₱' + (parseFloat(o.total) || 0).toFixed(2) + '</td><td><button class="btn-danger" style="padding:6px 12px; font-size:0.85rem;" onclick="admin.deleteSale(\'' + id + '\')">×</button></td></tr>';
+                    }).join('');
+                    const detailSection = '<div style="overflow-x:auto; margin-top:20px;"><table class="titan-table" style="width:100%; min-width:900px;"><thead><tr><th>Date / Time</th><th>Cashier</th><th>Order</th><th>Total</th><th>Delete</th></tr></thead><tbody>' + orderRows + '</tbody></table></div>';
+                    const html = '<button class="btn-glam" onclick="document.getElementById(\'admin-panel\').style.display = \'none\';">BACK TO POS</button><br /><br /><h1>DAILY SALES LOGS</h1>' +
+                        '<div style="display:grid; grid-template-columns: repeat(1, minmax(200px, 1fr)); gap:20px; margin-bottom:20px;">' +
+                            '<div class="cart-total-box" style="text-align:center;"><span>TODAY\'S SALES</span><h2 style="color:var(--success);">₱' + sum(dailyOrders).toFixed(2) + '</h2><small>' + dailyOrders.length + ' orders</small></div>' +
+                        '</div>' +
+                        detailSection;
+                    root.innerHTML = html;
+                }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factorial | C++ Project</title>
+    <style>
+        :root { --bg: #101d1c; --panel: #172a27; --line: #2b4943; --ink: #e8f3ee; --muted: #91aaa2; --teal: #70d2bd; --orange: #f29a6b; }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--bg); font-family: Arial, sans-serif; }
+        .shell { width: min(1180px, calc(100% - 36px)); margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
+        a { color: var(--teal); font-weight: bold; text-decoration: none; }
+        main { padding: 55px 0 80px; }
+        .eyebrow { color: var(--orange); font-size: 12px; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 14px 0 10px; font-size: clamp(2.5rem, 6vw, 5rem); }
+        p { max-width: 680px; color: var(--muted); line-height: 1.7; }
+        .panel { margin-top: 30px; border: 1px solid var(--line); background: var(--panel); }
+        .panel-head, .controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+        .code { width: 100%; min-height: 370px; padding: 20px; border: 0; outline: 0; resize: vertical; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; }
+        pre { margin: 0; padding: 20px; overflow: auto; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; white-space: pre-wrap; }
+        .controls { flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 0; }
+        button { padding: 11px 16px; color: #101d1c; background: var(--teal); border: 0; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        input { width: 180px; padding: 9px; color: var(--ink); background: #0b1514; border: 1px solid var(--line); }
+        .terminal-input { display: none; align-items: center; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--line); color: var(--teal); background: #08100f; font-family: Consolas, monospace; }
+        .terminal-input.visible { display: flex; }
+        .terminal-input input { width: 100%; margin: 0; padding: 8px 0; color: var(--ink); background: transparent; border: 0; outline: 0; font: inherit; }
+        @media (max-width: 650px) { header { gap: 15px; flex-wrap: wrap; } .shell { width: min(100% - 28px, 1180px); } }
+    @media (max-width: 650px) { .panel-head, .controls { flex-wrap: wrap; align-items: flex-start; } .panel-head strong, .panel-head span, .controls span { max-width: 100%; overflow-wrap: anywhere; } .controls span { width: 100%; } .controls button { width: 100%; } .code { min-height: 300px; padding: 14px; font-size: 12px; } .terminal-input { padding: 10px 12px; } .terminal-input input { min-width: 0; } }
+	</style>
+</head>
+<body>
+    <header class="shell"><a href="cpp.html">← Back to C++ projects</a><strong>C++ COLLECTION</strong></header>
+    <main class="shell">
+        <div class="eyebrow">C++ project · C++17</div>
+        <h1>Factorial</h1>
+        <p>Check a positive integer and calculate its factorial.</p>
+        <section class="panel">
+            <div class="panel-head"><strong>factorial.cpp</strong></div>
+            <textarea class="code" spellcheck="false">#include &lt;iostream&gt;
+
+using namespace std;
+
+int main() {
+  int n, fact = 1;
+
+  cout &lt;&lt; "Enter a positive integer: ";
+  cin &gt;&gt; n;
+
+  if (n &lt; 0) {
+    cout &lt;&lt; "Factorial is not defined for negative numbers." &lt;&lt; endl;
+  } else {
+    for (int i = 1; i &lt;= n; i++) {
+      fact = fact * i;
+    }
+    cout &lt;&lt; "The factorial of " &lt;&lt; n &lt;&lt; " is: " &lt;&lt; fact &lt;&lt; endl;
+  }
+  return 0;
+}</textarea>
+            <div class="controls"><span>Run the program, then answer the prompt below.</span><button id="run" type="button">Run C++</button></div>
+            <pre id="output">Enter a number and click Run C++.</pre>
+            <div class="terminal-input" id="terminal-input"><span>&gt;</span><input id="user-input" type="text" autocomplete="off" placeholder="Type your answer, then press Enter"></div>
+        </section>
+    </main>
+    <script>
+      const input = document.querySelector('#user-input');
+      const terminalInput = document.querySelector('#terminal-input');
+      document.querySelector('#run').addEventListener('click', () => { document.querySelector('#output').textContent = 'Enter a positive integer: '; terminalInput.classList.add('visible'); input.value = ''; input.focus(); });
+      input.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' || !input.value.trim()) return;
+        const number = Number(input.value.trim());
+        const output = document.querySelector('#output');
+        if (!Number.isInteger(number) || number < 0) { output.textContent += `${input.value.trim()}\nInvalid input. Enter a non-negative integer.`; return; }
+        let factorial = 1;
+        for (let value = 1; value <= number; value++) factorial *= value;
+        output.textContent += `${input.value.trim()}\nThe factorial of ${number} is: ${factorial}`;
+        input.value = '';
+        terminalInput.classList.remove('visible');
+      });
+    </script>
+</body>
+</html>

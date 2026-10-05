@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>C++ Projects | Marcela</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root { --ink:#f4eafb; --muted:#c5b5d5; --line:rgba(221,185,235,.3); --teal:#e4acd9; --coral:#f0b4d8; --violet:#9c79c9; --surface:rgba(52,42,92,.78); }
+		* { box-sizing:border-box; }
+		body { margin:0; min-height:100vh; color:var(--ink); font-family:"DM Sans",sans-serif; background:radial-gradient(circle at 80% 5%,rgba(209,120,199,.28),transparent 28%),radial-gradient(circle at 10% 85%,rgba(77,134,193,.22),transparent 30%),linear-gradient(145deg,#121b3b,#1a1740 55%,#292052); }
+		body:before { content:"*  .  *  .  *  .  *  .  *"; position:fixed; inset:7% 0 auto; color:rgba(250,218,249,.55); font-size:.8rem; letter-spacing:20px; text-align:center; pointer-events:none; }
+		.shell { width:min(1180px,calc(100% - 56px)); margin:auto; }
+		header { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:32px 0; }
+		header strong { color:var(--muted); font:700 .8rem "Space Grotesk",sans-serif; letter-spacing:.14em; }
+		a { color:var(--teal); font-weight:700; text-decoration:none; }
+		.back { display:inline-flex; align-items:center; gap:9px; padding:11px 15px; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.08); font:700 .82rem "Space Grotesk",sans-serif; transition:.2s; }
+		.back:hover { color:#2b1c41; background:var(--coral); transform:translateY(-2px); }
+		main { padding:55px 0 80px; }
+		.eyebrow { color:var(--teal); font:700 .76rem "Space Grotesk",sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+		h1 { max-width:760px; margin:12px 0 15px; color:var(--ink); font:700 clamp(3rem,8vw,6.5rem)/.98 "Playfair Display",serif; letter-spacing:-.06em; }
+		.intro { max-width:680px; margin:0; color:var(--muted); line-height:1.7; }
+		.projects { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:40px; }
+		.project { display:flex; min-height:205px; flex-direction:column; justify-content:space-between; padding:25px; border:1px solid var(--line); border-radius:24px 24px 8px 24px; background:var(--surface); box-shadow:0 18px 35px rgba(3,7,28,.25); transition:.25s; }
+		.project:hover { border-color:var(--coral); box-shadow:0 18px 38px rgba(236,119,203,.2); transform:translateY(-6px); }
+		.project-top { display:flex; justify-content:space-between; color:var(--teal); font:700 .72rem "Space Grotesk",sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+		.project h2 { margin:30px 0 10px; color:var(--ink); font:700 1.32rem/1.1 "Playfair Display",serif; }
+		.project p { margin:0; color:var(--muted); line-height:1.6; font-size:.9rem; }
+		.project-link { display:inline-block; margin-top:24px; color:var(--coral); font:700 .82rem "Space Grotesk",sans-serif; }
+		@media (max-width:900px) { .projects { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+		@media (max-width:650px) { .shell { width:calc(100% - 28px); } header { gap:14px; flex-wrap:wrap; padding:22px 0; } header strong { margin-left:auto; font-size:.68rem; } main { padding:42px 0 60px; } h1 { font-size:3.5rem; } .projects { grid-template-columns:1fr; gap:15px; margin-top:30px; } .project { min-height:175px; padding:22px; } }
+		@media (max-width:400px) { h1 { font-size:2.9rem; } .intro { font-size:.9rem; } }
+	</style>
+</head>
+<body>
+	<header class="shell"><a class="back" href="index.html">&#8592; Back to Projects</a><strong>C++ COLLECTION</strong></header>
+	<main class="shell">
+		<div class="eyebrow">01 / Code collection</div>
+		<h1>Small programs, useful lessons.</h1>
+		<p class="intro">Each project has its own page where the source code can be viewed, tested with input, and run through the C++17 runner.</p>
+		<section class="projects" aria-label="C++ projects">
+			<article class="project"><div><div class="project-top"><span>01 / Fundamentals</span><span>&#8599;</span></div><h2>Multiplication Table</h2><p>Generate a multiplication table from 1 to 10 using an input number.</p></div><a class="project-link" href="multiplication-table.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>02 / Fundamentals</span><span>&#8599;</span></div><h2>Student Grade Report</h2><p>Enter student names and grades to generate letter-grade results.</p></div><a class="project-link" href="student-grade-report.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>03 / Utilities</span><span>&#8599;</span></div><h2>Basic Calculator</h2><p>Enter two numbers to calculate their sum, difference, and product.</p></div><a class="project-link" href="basic-calculator.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>04 / Systems</span><span>&#8599;</span></div><h2>Simple Bank System</h2><p>Deposit or withdraw money and view the updated account balance.</p></div><a class="project-link" href="simple-bank-system.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>05 / Logic</span><span>&#8599;</span></div><h2>Yes/No Continuation System</h2><p>Validate a Y/N response and repeat the program while the user chooses to continue.</p></div><a class="project-link" href="yes-no-system.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>06 / Algorithms</span><span>&#8599;</span></div><h2>Selection Sort</h2><p>Sort an array of up to 50 numbers from smallest to largest.</p></div><a class="project-link" href="selection-sort.html">View code &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>07 / Logic</span><span>&#8599;</span></div><h2>Factorial</h2><p>Check a positive integer and calculate its factorial.</p></div><a class="project-link" href="factorial.html">View code &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>08 / Algorithms</span><span>&#8599;</span></div><h2>Linear Search</h2><p>Search for a value in an array and display its index when found.</p></div><a class="project-link" href="linear-search.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>09 / Algorithms</span><span>&#8599;</span></div><h2>Bubble Sort</h2><p>Sort a list of numbers from smallest to largest using bubble sort.</p></div><a class="project-link" href="bubble-sort.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>10 / Algorithms</span><span>&#8599;</span></div><h2>Binary Search</h2><p>Search for a number in a sorted array using binary search.</p></div><a class="project-link" href="binary-search.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>11 / Classes</span><span>&#8599;</span></div><h2>Person Class</h2><p>Practice classes, private data, setters, getters, and methods in C++.</p></div><a class="project-link" href="person-class.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>12 / Pointers</span><span>&#8599;</span></div><h2>Person Pointers</h2><p>Practice dynamic objects, pointer access, and memory cleanup in C++.</p></div><a class="project-link" href="person-pointers.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>13 / Classes</span><span>&#8599;</span></div><h2>Circle Class</h2><p>Calculate circle area and circumference using a C++ class.</p></div><a class="project-link" href="circle-class.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>14 / Classes</span><span>&#8599;</span></div><h2>Bank Account Class</h2><p>Test deposits, withdrawals, heap objects, and insufficient funds.</p></div><a class="project-link" href="bank-account-class.html">View code and run &#8594;</a></article>
+			<article class="project"><div><div class="project-top"><span>15 / Patterns</span><span>&#8599;</span></div><h2>Star Triangle Pattern</h2><p>Use nested loops to print a centered triangle made of stars.</p></div><a class="project-link" href="star-triangle.html">View code and run &#8594;</a></article>
+		</section>
+	</main>
+</body>
+</html>

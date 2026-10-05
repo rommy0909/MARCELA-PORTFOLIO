@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner() {
+      return request.auth != null
+        && request.auth.token.email == 'marcelamaristela80@gmail.com';
+    }
+
+    function rulesAreActive() {
+      return request.time < timestamp.date(2027, 1, 1);
+    }
+
+    match /feedback/{feedbackId} {
+      allow read: if rulesAreActive();
+      allow create: if rulesAreActive() && request.resource.data.keys().hasOnly(['message', 'rating', 'name', 'createdAt'])
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 2
+        && request.resource.data.message.size() <= 1000
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.createdAt == request.time;
+      allow update: if rulesAreActive() && isOwner()
+        && request.resource.data.keys().hasOnly(['message', 'rating', 'name', 'reply', 'createdAt'])
+        && request.resource.data.message == resource.data.message
+        && request.resource.data.rating == resource.data.rating
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 2
+        && request.resource.data.message.size() <= 1000
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 80
+        && (!('reply' in request.resource.data) || (request.resource.data.reply is string && request.resource.data.reply.size() <= 1000));
+      allow delete: if rulesAreActive() && isOwner();
+    }
+  }
+}

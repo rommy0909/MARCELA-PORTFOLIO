@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Student Grade Report | C++ Project</title>
+	<style>
+		:root { --bg: #101d1c; --panel: #172a27; --line: #2b4943; --ink: #e8f3ee; --muted: #91aaa2; --teal: #70d2bd; --orange: #f29a6b; }
+		* { box-sizing: border-box; }
+		body { margin: 0; color: var(--ink); background: var(--bg); font-family: Arial, sans-serif; }
+		.shell { width: min(1180px, calc(100% - 36px)); margin: auto; }
+		header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
+		a { color: var(--teal); font-weight: bold; text-decoration: none; }
+		main { padding: 55px 0 80px; }
+		.eyebrow { color: var(--orange); font-size: 12px; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; }
+		h1 { margin: 14px 0 10px; font-size: clamp(2.5rem, 6vw, 5rem); }
+		p { max-width: 680px; color: var(--muted); line-height: 1.7; }
+		.panel { margin-top: 30px; border: 1px solid var(--line); background: var(--panel); }
+		.panel-head, .controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+		.code { width: 100%; min-height: 520px; padding: 20px; border: 0; outline: 0; resize: vertical; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; }
+		.controls { flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 0; }
+		.terminal-input { display: none; align-items: center; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--line); color: var(--teal); background: #08100f; font-family: Consolas, monospace; }
+		.terminal-input.visible { display: flex; }
+		.terminal-input input { width: 100%; margin: 0; padding: 8px 0; color: var(--ink); background: transparent; border: 0; outline: 0; font: inherit; }
+		button { padding: 11px 16px; color: #101d1c; background: var(--teal); border: 0; border-radius: 5px; font-weight: bold; cursor: pointer; }
+		pre { min-height: 150px; margin: 0; padding: 18px; overflow: auto; color: #bde8d9; background: #08100f; white-space: pre-wrap; }
+		@media (max-width: 650px) { header { gap: 15px; flex-wrap: wrap; } .shell { width: min(100% - 28px, 1180px); } }
+	@media (max-width: 650px) { .panel-head, .controls { flex-wrap: wrap; align-items: flex-start; } .panel-head strong, .panel-head span, .controls span { max-width: 100%; overflow-wrap: anywhere; } .controls span { width: 100%; } .controls button { width: 100%; } .code { min-height: 300px; padding: 14px; font-size: 12px; } .terminal-input { padding: 10px 12px; } .terminal-input input { min-width: 0; } }
+	</style>
+</head>
+<body>
+	<header class="shell"><a href="cpp.html">← Back to C++ projects</a><strong>C++ COLLECTION</strong></header>
+	<main class="shell">
+		<div class="eyebrow">C++ project · C++17</div>
+		<h1>Student Grade Report</h1>
+		<p>Enter the number of students, then add each name and grade to generate a letter-grade report.</p>
+		<section class="panel">
+			<div class="panel-head"><strong>student-grade-report.cpp</strong><span>C++17</span></div>
+			<textarea class="code" spellcheck="false">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    int numStudents;
+    cout &lt;&lt; "Enter number of students: ";
+    cin &gt;&gt; numStudents;
+    vector&lt;string&gt; names(numStudents);
+    vector&lt;double&gt; grades(numStudents);
+    for (int i = 0; i &lt; numStudents; i++) {
+        cout &lt;&lt; "\nEnter name of student " &lt;&lt; i + 1 &lt;&lt; ": ";
+        cin &gt;&gt; names[i];
+        cout &lt;&lt; "Enter grade of " &lt;&lt; names[i] &lt;&lt; ": ";
+        cin &gt;&gt; grades[i];
+    }
+    cout &lt;&lt; "\n--- Student Grade Report ---\n";
+    for (int i = 0; i &lt; numStudents; i++) {
+        cout &lt;&lt; names[i] &lt;&lt; " - Grade: " &lt;&lt; grades[i];
+        if (grades[i] &gt;= 90) cout &lt;&lt; " (A)";
+        else if (grades[i] &gt;= 80) cout &lt;&lt; " (B)";
+        else if (grades[i] &gt;= 70) cout &lt;&lt; " (C)";
+        else if (grades[i] &gt;= 60) cout &lt;&lt; " (D)";
+        else cout &lt;&lt; " (F)";
+        cout &lt;&lt; endl;
+    }
+    return 0;
+}</textarea>
+			<div class="controls"><span>Run the program, then answer each prompt below.</span><button id="run" type="button">Run C++</button></div>
+			<pre id="output">Click Run C++ to start the program.</pre>
+			<div class="terminal-input" id="terminal-input"><span>&gt;</span><input id="user-input" type="text" autocomplete="off" placeholder="Type your answer, then press Enter"></div>
+		</section>
+	</main>
+	<script>
+		const output = document.querySelector('#output');
+		const input = document.querySelector('#user-input');
+		const terminalInput = document.querySelector('#terminal-input');
+		let step = 'count';
+		let count = 0;
+		let studentIndex = 0;
+		const students = [];
+		const letter = grade => grade >= 90 ? 'A' : grade >= 80 ? 'B' : grade >= 70 ? 'C' : grade >= 60 ? 'D' : 'F';
+		function print(text) { output.textContent += text; output.scrollTop = output.scrollHeight; }
+		function startProgram() { step = 'count'; count = 0; studentIndex = 0; students.length = 0; output.textContent = 'Enter number of students: '; terminalInput.classList.add('visible'); input.value = ''; input.focus(); }
+		document.querySelector('#run').addEventListener('click', startProgram);
+		input.addEventListener('keydown', event => {
+			if (event.key !== 'Enter') return;
+			const answer = input.value.trim();
+			if (!answer) return;
+			print(`${answer}\n`);
+			input.value = '';
+			if (step === 'count') {
+				count = Math.max(1, Math.min(20, Number(answer) || 1));
+				step = 'name';
+				print(`\nEnter name of student 1: `);
+			} else if (step === 'name') {
+				students.push({ name: answer, grade: 0 });
+				step = 'grade';
+				print(`Enter grade of ${answer}: `);
+			} else {
+				students[studentIndex].grade = Number(answer) || 0;
+				studentIndex++;
+				if (studentIndex < count) {
+					step = 'name';
+					print(`\nEnter name of student ${studentIndex + 1}: `);
+				} else {
+					step = 'done';
+					print('\n--- Student Grade Report ---\n');
+					students.forEach(student => print(`${student.name} - Grade: ${student.grade} (${letter(student.grade)})\n`));
+					terminalInput.classList.remove('visible');
+				}
+			}
+		});
+	</script>
+</body>
+</html>

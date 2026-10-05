@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yes/No Continuation System | C++ Project</title>
+    <style>
+        :root { --bg: #101d1c; --panel: #172a27; --line: #2b4943; --ink: #e8f3ee; --muted: #91aaa2; --teal: #70d2bd; --orange: #f29a6b; }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--bg); font-family: Arial, sans-serif; }
+        .shell { width: min(1180px, calc(100% - 36px)); margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
+        a { color: var(--teal); font-weight: bold; text-decoration: none; }
+        main { padding: 55px 0 80px; }
+        .eyebrow { color: var(--orange); font-size: 12px; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 14px 0 10px; font-size: clamp(2.5rem, 6vw, 5rem); }
+        p { max-width: 680px; color: var(--muted); line-height: 1.7; }
+        .panel { margin-top: 30px; border: 1px solid var(--line); background: var(--panel); }
+        .panel-head, .controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+        .code { width: 100%; min-height: 370px; padding: 20px; border: 0; outline: 0; resize: vertical; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; }
+        pre { min-height: 250px; margin: 0; padding: 20px; overflow: auto; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; white-space: pre-wrap; }
+        .controls { flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 0; }
+        button { padding: 11px 16px; color: #101d1c; background: var(--teal); border: 0; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        input { width: 180px; padding: 9px; color: var(--ink); background: #0b1514; border: 1px solid var(--line); }
+            .terminal-input { display: none; align-items: center; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--line); color: var(--teal); background: #08100f; font-family: Consolas, monospace; }
+            .terminal-input.visible { display: flex; }
+            .terminal-input input { width: 100%; margin: 0; padding: 8px 0; color: var(--ink); background: transparent; border: 0; outline: 0; font: inherit; }
+        @media (max-width: 650px) { header { gap: 15px; flex-wrap: wrap; } .shell { width: min(100% - 28px, 1180px); } }
+    @media (max-width: 650px) { .panel-head, .controls { flex-wrap: wrap; align-items: flex-start; } .panel-head strong, .panel-head span, .controls span { max-width: 100%; overflow-wrap: anywhere; } .controls span { width: 100%; } .controls button { width: 100%; } .code { min-height: 300px; padding: 14px; font-size: 12px; } .terminal-input { padding: 10px 12px; } .terminal-input input { min-width: 0; } }
+	</style>
+</head>
+<body>
+    <header class="shell"><a href="cpp.html">← Back to C++ projects</a><strong>C++ COLLECTION</strong></header>
+    <main class="shell">
+        <div class="eyebrow">C++ project · C++17</div>
+        <h1>Yes/No Continuation System</h1>
+        <p>Validate a Y/N response and continue asking while the user answers yes.</p>
+        <section class="panel">
+            <div class="panel-head"><strong>yes-no-system.cpp</strong><span>C++17</span></div>
+            <textarea class="code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    char ans;
+    do {
+        cout &lt;&lt; "Do you want to continue (Y/N)?\n";
+        cout &lt;&lt; "You must type a 'Y' or an 'N'.\n";
+        cin &gt;&gt; ans;
+
+        // Input validation loop (simplified)
+        while (ans != 'Y' &amp;&amp; ans != 'N' &amp;&amp; ans != 'y' &amp;&amp; ans != 'n') {
+            cout &lt;&lt; "Invalid input. Please type a 'Y' or an 'N'.\n";
+            cin &gt;&gt; ans;
+        }
+    } while (ans == 'Y' || ans == 'y');
+
+    cout &lt;&lt; "The program has ended." &lt;&lt; endl;
+    return 0;
+}</textarea>
+            <div class="controls"><span>Run the program, then answer the prompt below.</span><button id="run" type="button">Run C++</button></div>
+            <pre id="output">Click Run C++ to start the program.</pre>
+            <div class="terminal-input" id="input-row"><span>&gt;</span><input id="user-input" type="text" autocomplete="off" placeholder="Type your answer, then press Enter"></div>
+        </section>
+    </main>
+    <script>
+        const output = document.querySelector('#output');
+        const inputRow = document.querySelector('#input-row');
+        const input = document.querySelector('#user-input');
+        function startProgram() { output.textContent = "Do you want to continue (Y/N)?\nYou must type a 'Y' or an 'N'.\n"; inputRow.classList.add('visible'); input.value = ''; input.focus(); }
+        document.querySelector('#run').addEventListener('click', startProgram);
+        input.addEventListener('keydown', event => {
+            if (event.key !== 'Enter' || !input.value.trim()) return;
+            const answer = input.value.trim();
+            output.textContent += `${answer}\n`;
+            input.value = '';
+            if (!['Y', 'N', 'y', 'n'].includes(answer)) { output.textContent += "Invalid input. Please type a 'Y' or an 'N'.\n"; return; }
+            if (answer === 'Y' || answer === 'y') { output.textContent += "\nDo you want to continue (Y/N)?\nYou must type a 'Y' or an 'N'.\n"; return; }
+            output.textContent += 'The program has ended.\n';
+            inputRow.classList.remove('visible');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Cost & Price Calculator</title>
+    <link rel="stylesheet" href="busismart-pricing-style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Small BusiSmartPricing</h1>
+        <div id="add-ingredient-section">
+            <h2>Add New Item</h2>
+            <label for="new-ingredient-name">Item Name:</label>
+            <input type="text" id="new-ingredient-name">
+            <label for="new-ingredient-quantity">Quantity:</label>
+            <input type="text" id="new-ingredient-quantity">
+            <label for="new-ingredient-cost">Cost per Quantity:</label>
+            <input type="number" id="new-ingredient-cost" value="0">
+            <button id="add-ingredient">Add to List</button>
+        </div>
+        <div id="ingredients-section">
+            <h2>Items List</h2>
+            <table id="ingredients-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Cost per Quantity</th>
+                        <th>Total Cost</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Items will be added here dynamically -->
+                </tbody>
+            </table>
+            <p>Total Items Cost: <span id="total-ingredients-cost">0</span></p>
+        </div>
+        <div id="overhead-section">
+            <h2>Overhead Costs</h2>
+            <label for="electricity-cost">Electricity Cost:</label>
+            <input type="number" id="electricity-cost" value="0">
+            <label for="packaging-cost">Packaging Cost:</label>
+            <input type="number" id="packaging-cost" value="0">
+        </div>
+        <div id="labor-delivery-section">
+            <h2>Labor and Delivery</h2>
+            <div class="inline-inputs">
+                <div>
+                    <label for="labor-type">Labor Type:</label>
+                    <select id="labor-type">
+                        <option value="fixed">Fixed Rate</option>
+                        <option value="hourly">Hourly Rate</option>
+                    </select>
+                    <div id="fixed-labor" style="display: block;">
+                        <label for="labor-cost">Labor Cost:</label>
+                        <input type="number" id="labor-cost" value="0">
+                    </div>
+                    <div id="hourly-labor" style="display: none;">
+                        <label for="hourly-rate">Hourly Rate:</label>
+                        <input type="number" id="hourly-rate" value="0">
+                        <label for="hours-worked">Hours Worked:</label>
+                        <input type="number" id="hours-worked" value="0">
+                    </div>
+                </div>
+                <div>
+                    <label for="delivery-method">Delivery Method:</label>
+                    <select id="delivery-method">
+                        <option value="pick-up">Pick-up</option>
+                        <option value="standard">Standard Delivery</option>
+                        <option value="express">Express Delivery</option>
+                    </select>
+                    <label for="delivery-distance">Delivery Distance (km):</label>
+                    <input type="number" id="delivery-distance" value="0">
+                </div>
+            </div>
+        </div>
+        <div id="profit-section">
+            <label for="profit-margin">Profit Margin (%):</label>
+            <input type="number" id="profit-margin" value="50">
+        </div>
+        <button id="calculate">Calculate</button>
+        <div id="results-section">
+            <h2>Results</h2>
+            <p>Total Items Cost: <span id="results-ingredients-cost">0</span></p>
+            <p>Total Overhead Cost: <span id="results-overhead-cost">0</span></p>
+            <p>Labor Cost: <span id="results-labor-cost">0</span></p>
+            <p>Delivery Fee: <span id="results-delivery-fee">0</span></p>
+            <p>Total Cost: <span id="results-total-cost">0</span></p>
+            <p class="highlight">Desired Profit: <span id="results-profit">0</span></p>
+            <p class="highlight">Selling Price: <span id="selling-price">0</span></p>
+        </div>
+        <button id="generate-receipt">Generate Receipt</button>
+
+        <div id="receipt-section" style="display: none;">
+            <h2>Receipt</h2>
+            <div id="receipt-content">
+                <p id="receipt-items"><strong>Items:</strong></p>
+                <ul id="receipt-items-list">
+                    <!-- Items will be dynamically generated here -->
+                </ul>
+                <p id="receipt-total-items-cost">Total Items Cost: <span></span></p>
+                <p id="receipt-overhead-cost">Overhead Cost: <span></span></p>
+                <p id="receipt-labor-cost">Labor Cost: <span></span></p>
+                <p id="receipt-delivery-fee">Delivery Fee: <span></span></p>
+                <p id="receipt-total"><strong>Total: <span></span></strong></p>
+            </div>
+            <p>Exchange Rate: 1 USD = <span id="exchange-rate"></span> PHP</p>
+            <button id="convert-to-usd">Convert to USD</button>
+        </div>
+
+        <!-- Add this test button OUTSIDE of any other major elements -->
+        <button id="test-button">Test Button</button>
+    </div>
+    <script src="busismart-pricing-script.js"></script>
+</body>
+</html>

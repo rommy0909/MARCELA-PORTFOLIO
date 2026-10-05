@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection Sort | C++ Project</title>
+    <style>
+        :root { --bg: #101d1c; --panel: #172a27; --line: #2b4943; --ink: #e8f3ee; --muted: #91aaa2; --teal: #70d2bd; --orange: #f29a6b; }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--bg); font-family: Arial, sans-serif; }
+        .shell { width: min(1180px, calc(100% - 36px)); margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
+        a { color: var(--teal); font-weight: bold; text-decoration: none; }
+        main { padding: 55px 0 80px; }
+        .eyebrow { color: var(--orange); font-size: 12px; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 14px 0 10px; font-size: clamp(2.5rem, 6vw, 5rem); }
+        p { max-width: 680px; color: var(--muted); line-height: 1.7; }
+        .panel { margin-top: 30px; border: 1px solid var(--line); background: var(--panel); }
+        .panel-head, .controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+        .code { width: 100%; min-height: 520px; padding: 20px; border: 0; outline: 0; resize: vertical; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; }
+        pre { margin: 0; padding: 20px; overflow: auto; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; white-space: pre-wrap; }
+        .controls { flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 0; }
+        button { padding: 11px 16px; color: #101d1c; background: var(--teal); border: 0; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        input { width: 180px; padding: 9px; color: var(--ink); background: #0b1514; border: 1px solid var(--line); }
+        .terminal-input { display: none; align-items: center; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--line); color: var(--teal); background: #08100f; font-family: Consolas, monospace; }
+        .terminal-input.visible { display: flex; }
+        .terminal-input input { width: 100%; margin: 0; padding: 8px 0; color: var(--ink); background: transparent; border: 0; outline: 0; font: inherit; }
+        @media (max-width: 650px) { header { gap: 15px; flex-wrap: wrap; } .shell { width: min(100% - 28px, 1180px); } }
+    @media (max-width: 650px) { .panel-head, .controls { flex-wrap: wrap; align-items: flex-start; } .panel-head strong, .panel-head span, .controls span { max-width: 100%; overflow-wrap: anywhere; } .controls span { width: 100%; } .controls button { width: 100%; } .code { min-height: 300px; padding: 14px; font-size: 12px; } .terminal-input { padding: 10px 12px; } .terminal-input input { min-width: 0; } }
+	</style>
+</head>
+<body>
+    <header class="shell"><a href="cpp.html">← Back to C++ projects</a><strong>C++ COLLECTION</strong></header>
+    <main class="shell">
+        <div class="eyebrow">C++ project · C++17</div>
+        <h1>Selection Sort</h1>
+        <p>Sort an array of up to 50 numbers from smallest to largest using selection sort.</p>
+        <section class="panel">
+            <div class="panel-head"><strong>selection-sort.cpp</strong></div>
+            <textarea class="code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int size, arr[50], i, j, temp;
+    cout &lt;&lt; "Enter array size: ";
+    cin &gt;&gt; size;
+
+    if (size &lt;= 0 || size &gt; 50) {
+        cout &lt;&lt; "Invalid array size. Size must be between 1 and 50." &lt;&lt; endl;
+        return 1;
+    }
+
+    cout &lt;&lt; "Enter array elements: ";
+    for (i = 0; i &lt; size; i++) {
+        cin &gt;&gt; arr[i];
+    }
+
+    cout &lt;&lt; "Sorting array using selection sort...\n";
+
+    for (i = 0; i &lt; size; i++) {
+        for (j = i + 1; j &lt; size; j++) {
+            if (arr[i] &gt; arr[j]) {
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+
+    cout &lt;&lt; "The sorted array is:\n";
+    for (i = 0; i &lt; size; i++) {
+        cout &lt;&lt; arr[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+            <div class="controls"><span>Run the program, then enter array values below.</span><button id="run" type="button">Run C++</button></div>
+            <pre id="output">Enter an array and click Run C++.</pre>
+            <div class="terminal-input" id="terminal-input"><span>&gt;</span><input id="user-input" type="text" autocomplete="off" placeholder="Type numbers, then press Enter"></div>
+        </section>
+    </main>
+    <script>
+        const input = document.querySelector('#user-input');
+        const terminalInput = document.querySelector('#terminal-input');
+        document.querySelector('#run').addEventListener('click', () => { document.querySelector('#output').textContent = 'Enter array elements: '; terminalInput.classList.add('visible'); input.value = ''; input.focus(); });
+        input.addEventListener('keydown', event => {
+            if (event.key !== 'Enter' || !input.value.trim()) return;
+            const values = input.value.trim().split(/\s+/).filter(Boolean).map(Number);
+            const output = document.querySelector('#output');
+            if (!values.length || values.some(Number.isNaN) || values.length > 50) { output.textContent += `${input.value.trim()}\nInvalid input. Enter 1 to 50 numbers.`; return; }
+            values.sort((first, second) => first - second);
+            output.textContent += `${input.value.trim()}\nSorting array using selection sort...\n\nThe sorted array is:\n${values.join(' ')}`;
+            input.value = '';
+            terminalInput.classList.remove('visible');
+        });
+    </script>
+</body>
+</html>

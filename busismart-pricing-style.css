@@ -1,0 +1,202 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #E6E6FA; /* Light Lavender Background */
+    color: #483D8B; /* Dark Slate Blue Text */
+}
+
+.container {
+    background-image: linear-gradient(to bottom, #D8BFD8, #E0BBE4); /* Pink and Violet Gradient */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 800px;
+    max-width: 95%;
+    text-align: center;
+}
+
+h1 {
+    color: #9400D3; /* Dark Violet */
+    margin-top: 0;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Fantasy Text Shadow */
+}
+
+h2 {
+    color: #8A2BE2; /* Blue Violet */
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle Shadow */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #6A5ACD; /* Slate Blue */
+    font-weight: bold;
+    font-size: 1em;
+    text-align: left;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #DDA0DD; /* Plum Border */
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    font-size: 1em;
+    background-color: #F0F8FF; /* Alice Blue Input */
+    color: #483D8B; /* Dark Slate Blue */
+}
+
+button {
+    background-color: #9400D3; /* Dark Violet */
+    color: #fff;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Button Shadow */
+}
+
+button:hover {
+    background-color: #8A2BE2; /* Blue Violet Hover */
+}
+
+#results-section {
+    margin-top: 30px;
+    padding: 25px;
+    border: 2px solid #DDA0DD; /* Plum Border */
+    border-radius: 12px;
+    background-color: #FAF0E6; /* Linen Results Background */
+    text-align: left;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Results Shadow */
+}
+
+#results-section p {
+    margin-bottom: 12px;
+    font-size: 1.1em;
+    color: #556B2F; /* Dark Olive Green Results Text */
+}
+
+.highlight {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #8B008B; /* Dark Magenta */
+}
+
+/* Table Styles */
+#ingredients-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+#ingredients-table th,
+#ingredients-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #DDA0DD; /* Plum Border */
+    text-align: left;
+}
+
+#ingredients-table th {
+    background-color: #D8BFD8; /* Thistle Header */
+    color: #483D8B; /* Dark Slate Blue */
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5); /* Header Shadow */
+}
+
+#ingredients-table td:last-child {
+    text-align: center;
+}
+
+.remove-ingredient {
+    background-color: #DC143C; /* Crimson */
+    color: #fff;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Remove Button Shadow */
+}
+
+.remove-ingredient:hover {
+    background-color: #B22222; /* Firebrick Hover */
+}
+
+/* Labor and Delivery - Inline Inputs */
+.inline-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inline-inputs > div {
+    width: 48%; /* Adjust as needed */
+}
+/* Receipt Section */
+#receipt-section {
+    margin-top: 30px;
+    padding: 25px;
+    border: 2px solid #DDA0DD; /* Plum Border */
+    border-radius: 12px;
+    background-color: #FAF0E6; /* Linen Results Background */
+    text-align: left;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Results Shadow */
+}
+
+#receipt-content p {
+    margin-bottom: 12px;
+    font-size: 1.1em;
+    color: #556B2F; /* Dark Olive Green Results Text */
+}
+
+/* Receipt-Specific Styles (Optional) */
+#receipt-items {
+    font-weight: bold;
+    color: #008000; /* Dark Green */
+}
+
+#receipt-items-list {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+#receipt-total-items-cost {
+    font-size: 1.1em;
+    color: #800080; /* Purple */
+}
+
+#receipt-overhead-cost {
+  font-size: 1.1em;
+  color: #800080;
+}
+
+#receipt-labor-cost {
+  font-size: 1.1em;
+  color: #800080;
+}
+
+#receipt-delivery-fee {
+  font-size: 1.1em;
+  color: #800080;
+}
+
+#receipt-total {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #800080;
+}

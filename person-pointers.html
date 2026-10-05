@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Pointers | C++ Project</title>
+    <style>
+        :root { --bg: #101d1c; --panel: #172a27; --line: #2b4943; --ink: #e8f3ee; --muted: #91aaa2; --teal: #70d2bd; --orange: #f29a6b; }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--bg); font-family: Arial, sans-serif; }
+        .shell { width: min(1180px, calc(100% - 36px)); margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
+        a { color: var(--teal); font-weight: bold; text-decoration: none; }
+        main { padding: 55px 0 80px; }
+        .eyebrow { color: var(--orange); font-size: 12px; font-weight: bold; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 14px 0 10px; font-size: clamp(2.5rem, 6vw, 5rem); }
+        p { max-width: 680px; color: var(--muted); line-height: 1.7; }
+        .panel { margin-top: 30px; border: 1px solid var(--line); background: var(--panel); }
+        .panel-head, .controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+        .code { width: 100%; min-height: 620px; padding: 20px; border: 0; outline: 0; resize: vertical; color: #bde8d9; background: #0b1514; font: 13px/1.6 Consolas, monospace; }
+        .controls { flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 0; }
+        button { padding: 11px 16px; color: #101d1c; background: var(--teal); border: 0; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        pre { min-height: 220px; margin: 0; padding: 18px; overflow: auto; color: #bde8d9; background: #08100f; white-space: pre-wrap; }
+        @media (max-width: 650px) { header { gap: 15px; flex-wrap: wrap; } .shell { width: min(100% - 28px, 1180px); } }
+    @media (max-width: 650px) { .panel-head, .controls { flex-wrap: wrap; align-items: flex-start; } .panel-head strong, .panel-head span, .controls span { max-width: 100%; overflow-wrap: anywhere; } .controls span { width: 100%; } .controls button { width: 100%; } .code { min-height: 300px; padding: 14px; font-size: 12px; } .terminal-input { padding: 10px 12px; } .terminal-input input { min-width: 0; } }
+	</style>
+</head>
+<body>
+    <header class="shell"><a href="cpp.html">← Back to C++ projects</a><strong>C++ COLLECTION</strong></header>
+    <main class="shell">
+        <div class="eyebrow">C++ project · C++17</div>
+        <h1>Person Pointers</h1>
+        <p>Practice dynamic object creation with pointers, member access using <code>-&gt;</code>, and memory cleanup.</p>
+        <section class="panel">
+            <div class="panel-head"><strong>person-pointers.cpp</strong><span>C++17</span></div>
+            <textarea class="code" spellcheck="false">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Person {
+private:
+    string name;
+    int age;
+public:
+    void setName(string name) { this-&gt;name = name; }
+    string getName() { return name; }
+    void setAge(int presentAge) { age = presentAge; }
+    int getAge() { return age; }
+    void sing(string song) {
+        cout &lt;&lt; "You are singing " &lt;&lt; song &lt;&lt; "." &lt;&lt; endl &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Person *p1 = new Person();
+    Person *p2 = new Person();
+    Person *p3 = new Person();
+
+    p1-&gt;setName("Erika"); p1-&gt;setAge(8);
+    cout &lt;&lt; "Hello " &lt;&lt; p1-&gt;getName() &lt;&lt; "." &lt;&lt; endl;
+    cout &lt;&lt; "You are " &lt;&lt; p1-&gt;getAge() &lt;&lt; " years old." &lt;&lt; endl;
+    p1-&gt;sing("Malaya");
+
+    p2-&gt;setName("Juan"); p2-&gt;setAge(18);
+    cout &lt;&lt; "Hello " &lt;&lt; p2-&gt;getName() &lt;&lt; "." &lt;&lt; endl;
+    cout &lt;&lt; "You are " &lt;&lt; p2-&gt;getAge() &lt;&lt; " years old." &lt;&lt; endl;
+    p2-&gt;sing("Buwan");
+
+    p3-&gt;setName("Susan"); p3-&gt;setAge(14);
+    cout &lt;&lt; "Hello " &lt;&lt; p3-&gt;getName() &lt;&lt; "." &lt;&lt; endl;
+    cout &lt;&lt; "You are " &lt;&lt; p3-&gt;getAge() &lt;&lt; " years old." &lt;&lt; endl;
+    p3-&gt;sing("stone cold");
+
+    delete p1;
+    delete p2;
+    delete p3;
+    return 0;
+}</textarea>
+            <div class="controls"><span>Run the program to view the pointer output.</span><button id="run" type="button">Run C++</button></div>
+            <pre id="output">Click Run C++ to start the program.</pre>
+        </section>
+    </main>
+    <script>
+        const result = 'Hello Erika.\nYou are 8 years old.\nYou are singing Malaya.\n\nHello Juan.\nYou are 18 years old.\nYou are singing Buwan.\n\nHello Susan.\nYou are 14 years old.\nYou are singing stone cold.\n';
+        document.querySelector('#run').addEventListener('click', () => { document.querySelector('#output').textContent = result; });
+    </script>
+</body>
+</html>

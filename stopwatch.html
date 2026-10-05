@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Timer/Stopwatch</title>
+    <link rel="stylesheet" href="stopwatch-style.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>StopTime</h1>
+        <div class="theme-selector">
+            <label for="theme">Pumili ng Tema:</label>
+            <select id="theme">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="red">Red</option>
+                <option value="pink">Pink</option>
+                <option value="purple">Purple</option>
+                <option value="orange">Orange</option>
+                <option value="teal">Teal</option>
+                <option value="lime">Lime</option>
+                <option value="brown">Brown</option>
+                <option value="gray">Gray</option>
+                <!-- New Color Themes (Corrected Class Names) -->
+                <option value="soft-pink">Soft Pink</option>
+                <option value="lavender">Lavender</option>
+                <option value="steel-blue">Steel Blue</option>
+                <option value="light-steel">Light Steel</option>
+                <option value="mint">Mint</option>
+                <option value="dusty-rose">Dusty Rose</option>
+                <option value="forest-green">Forest Green</option>
+                <option value="pastel-green">Pastel Green</option>
+                <option value="ocean-blue">Ocean Blue</option>
+                <option value="orchid">Orchid</option>
+                <option value="deep-teal">Deep Teal</option>
+                <option value="slate-gray">Slate Gray</option>
+                <option value="burnt-sienna">Burnt Sienna</option>
+                <option value="seafoam-green">Seafoam Green</option>
+                <option value="ghost-white">Ghost White</option>
+            </select>
+        </div>
+        <div id="stopwatch-container" class="section-container">
+            <h2>Stopwatch</h2>
+            <div class="clock-face">
+                <div id="display">00:00:00:00</div>
+            </div>
+            <div id="stopwatchControls" class="controls">
+                <button id="startStop">Start</button>
+                <button id="stopButton">Stop</button>
+                <button id="reset">Reset</button>
+                <button id="lap">Lap</button>
+            </div>
+            <h2>Mga Lap Times</h2>
+            <ul id="lapList"></ul>
+            <div class="session-controls">
+                <input type="text" id="sessionName" placeholder="Session Name">
+                <button id="saveSession">Save Session</button>
+            </div>
+            <h2>Saved Sessions</h2>
+            <ul id="savedSessions"></ul>
+        </div>
+
+        <div id="timer-container" class="section-container" style="display: none;">
+            <!-- Initially hidden -->
+            <h2>Timer</h2>
+            <div id="timerControls" class="controls">
+                <input type="text" id="timerName" placeholder="Timer Name">
+                <input type="number" id="hours" placeholder="Oras" min="0">
+                <input type="number" id="minutes" placeholder="Minuto" min="0" max="59">
+                <input type="number" id="seconds" placeholder="Segundo" min="0" max="59">
+                <button id="setTimer">Set Timer</button>
+            </div>
+            <h2>Active Timers</h2>
+            <ul id="activeTimers"></ul>
+            <button id="startAllTimers">Start All Timers</button>
+        </div>
+
+        <div id="savedSessionsControls">
+            <button id="clearAllSessions">Clear All Sessions</button>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="mode-buttons">
+            <button id="stopwatchBtn" class="mode-button active">Stopwatch</button>
+            <button id="timerBtn" class="mode-button">Timer</button>
+        </div>
+
+        <audio id="alarmSound" preload="auto"></audio>
+    </div>
+    <script src="stopwatch-script.js"></script>
+</body>
+
+</html>
